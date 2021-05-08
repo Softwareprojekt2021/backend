@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `studiboerse`.`category` ;
 
 CREATE TABLE IF NOT EXISTS `studiboerse`.`category` (
   `id` INT NOT NULL,
-  `title` TEXT NOT NULL,
+  `title` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -62,7 +62,7 @@ DROP TABLE IF EXISTS `studiboerse`.`message` ;
 
 CREATE TABLE IF NOT EXISTS `studiboerse`.`message` (
   `id` INT NOT NULL,
-  `message` TEXT NOT NULL,
+  `message` VARCHAR(255) NOT NULL,
   `timestamp` TIMESTAMP NOT NULL,
   `chat_id` INT NOT NULL,
   `user_id` INT NOT NULL,
@@ -89,10 +89,10 @@ DROP TABLE IF EXISTS `studiboerse`.`offer` ;
 
 CREATE TABLE IF NOT EXISTS `studiboerse`.`offer` (
   `id` INT NOT NULL,
-  `title` TEXT NOT NULL,
-  `compensation_type` TEXT NOT NULL,
+  `title` VARCHAR(50) NOT NULL,
+  `compensation_type` VARCHAR(50) NOT NULL,
   `price` DECIMAL NULL,
-  `description` TEXT NULL,
+  `description` VARCHAR(1000) NULL,
   `sold` TINYINT NULL,
   `category_id` INT NOT NULL,
   `user_id` INT NOT NULL,
@@ -119,7 +119,7 @@ DROP TABLE IF EXISTS `studiboerse`.`picture` ;
 
 CREATE TABLE IF NOT EXISTS `studiboerse`.`picture` (
   `id` INT NOT NULL,
-  `data` TEXT NOT NULL,
+  `data` BLOB NOT NULL,
   `offer_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_picture_offer1_idx` (`offer_id` ASC) VISIBLE,
@@ -139,7 +139,7 @@ DROP TABLE IF EXISTS `studiboerse`.`rating` ;
 CREATE TABLE IF NOT EXISTS `studiboerse`.`rating` (
   `id` INT NOT NULL,
   `rating` SMALLINT NOT NULL,
-  `comment` VARCHAR(45) NULL,
+  `comment` VARCHAR(255) NULL,
   `user_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_rating_user1_idx` (`user_id` ASC) VISIBLE,
@@ -158,7 +158,7 @@ DROP TABLE IF EXISTS `studiboerse`.`university` ;
 
 CREATE TABLE IF NOT EXISTS `studiboerse`.`university` (
   `id` INT NOT NULL,
-  `university` TEXT NOT NULL,
+  `university` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -170,12 +170,12 @@ DROP TABLE IF EXISTS `studiboerse`.`user` ;
 
 CREATE TABLE IF NOT EXISTS `studiboerse`.`user` (
   `id` INT NOT NULL,
-  `first_name` TEXT NOT NULL,
-  `last_name` TEXT NOT NULL,
-  `e_mail` TEXT NOT NULL,
-  `password` TEXT NOT NULL,
-  `course` TEXT NOT NULL,
-  `profile_picture` TEXT NULL,
+  `first_name` VARCHAR(50) NOT NULL,
+  `last_name` VARCHAR(50) NOT NULL,
+  `e_mail` VARCHAR(50) NOT NULL,
+  `password` VARCHAR(50) NOT NULL,
+  `course` VARCHAR(50) NOT NULL,
+  `profile_picture` BLOB NULL,
   `admin` TINYINT NULL,
   `university_id` INT NOT NULL,
   PRIMARY KEY (`id`, `university_id`),
