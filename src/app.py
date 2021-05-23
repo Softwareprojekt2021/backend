@@ -9,7 +9,7 @@ import data.offer
 app = Flask(__name__)
 
 config = configparser.ConfigParser()
-config.read("config\\config.ini")
+config.read("../config/config.ini")
 databaseController = database.DatabaseController(config)
 
 
@@ -17,7 +17,12 @@ databaseController = database.DatabaseController(config)
 def login():
     json = request.get_json()
     if (verify_user(json["email"], json["password"])):
-        return "", 200
+        user = databaseController.get_user_by_email(json["email"])
+        #Token generieren und payload hinzufuegen
+        return jwt.encode({
+            "userId": user.id,
+            "admin": user.admin
+        }, "mysecretkey", algorithm="HS256"), 200
     else:
         return "", 404
 
@@ -73,7 +78,17 @@ def create_user():
 @app.route("/user", methods=["PUT"])
 def update_user():
     json = request.get_json()
-    user = databaseController.get_user_by_id(int(json["id"]))
+
+    #TODO 404 ausgeben falls der Token ungueltig ist oder gar keiner angegeben wurde
+
+    #Token ohne Baerer speichern
+    auth_header = request.headers["Authorization"].split()[1]
+    #Token auslesen
+    token = jwt.decode(auth_header, "mysecretkey", algorithm="HS256")
+
+    #User suchen mit der id vom token payload
+    user = databaseController.get_user_by_id(int(token['userId']))
+
     if ("first_name" in json):
         user.set_first_name(json["first_name"])
     if ("last_name" in json):
