@@ -1,6 +1,6 @@
-import mysql.connector
-import database.database
 import configparser
+
+import mysql.connector
 
 filename = "res\\sql\\Create.sql"
 try:
