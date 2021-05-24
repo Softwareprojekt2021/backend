@@ -76,6 +76,32 @@ def user():
     result += """}"""
     return result, 200, {"Content-Type": "application/json"}
 
+@app.route("/user", methods=["DELETE"])
+def delete_user():
+    auth_header = request.headers["Authorization"]
+    try:
+        user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError as e:
+        print(e)
+        return "", 401
+    databaseController.delete_user(user_id)
+    return "", 200
+
+@app.route("/user/<user_id>", methods=["DELETE"])
+def delete_user_by_id(user_id):
+    auth_header = request.headers["Authorization"]
+    try:
+        _, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError as e:
+        print(e)
+        return "", 401
+    if (admin):
+        if(databaseController.delete_user(user_id)):
+            return "", 200
+        else:
+            return "", 404
+    else:
+        return "", 401
 
 @app.route("/user", methods=["POST"])
 def create_user():
@@ -125,15 +151,15 @@ def update_user():
         return "", 409
 
 
-@app.route("/offer/<offerid>", methods=["GET"])
-def get_offer(offerid):
+@app.route("/offer/<offer_id>", methods=["GET"])
+def get_offer(offer_id):
     auth_header = request.headers["Authorization"]
     try:
         user_id, admin = decode_token(auth_header)
     except jwt.exceptions.InvalidTokenError:
         return "", 401
 
-    offer = databaseController.get_offer_by_id(offerid)
+    offer = databaseController.get_offer_by_id(offer_id)
     if (offer is None):
         return "", 404
     result = f"""{{"id":"{offer.get_id()}","title":"{offer.get_title()}","compensation_type":"{offer.get_compensation_type()}"
@@ -151,19 +177,19 @@ def get_offer(offerid):
     return result, 200, {"Content-Type": "application/json"}
 
 
-@app.route("/offer/<offerid>", methods=["DELETE"])
-def delete_offer(offerid):
+@app.route("/offer/<offer_id>", methods=["DELETE"])
+def delete_offer(offer_id):
     auth_header = request.headers["Authorization"]
     try:
         user_id, admin = decode_token(auth_header)
     except jwt.exceptions.InvalidTokenError:
         return "", 401
 
-    offer = databaseController.get_offer_by_id(offerid)
+    offer = databaseController.get_offer_by_id(offer_id)
     if(offer is None):
         return "", 404
     elif(offer.get_user_id() == user_id or admin):
-        databaseController.delete_offer(offerid)
+        databaseController.delete_offer(offer_id)
         return "", 200
     else:
         return "", 401
@@ -215,7 +241,8 @@ def update_offer():
     if ("sold" in json):
         offer.set_sold(json["sold"])
     if ("category" in json):
-        offer.set_category_id(databaseController.get_category_by_name(json["category"]).get_id())
+        offer.set_category_id(
+            databaseController.get_category_by_name(json["category"]).get_id())
     databaseController.update_offer(offer)
     return "", 200
 

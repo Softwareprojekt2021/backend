@@ -101,6 +101,22 @@ class DatabaseController:
         connection.close()
         return True
 
+    def delete_user(self, id):
+        query = """DELETE FROM user WHERE id=%s"""
+        offer_ids = self.get_offer_ids_by_user_id(id)
+        for offer_id in offer_ids:
+            self.delete_offer(offer_id)
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (id,))
+        cursor.fetchall()
+        rows = cursor.rowcount
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return rows>0
+
     def get_all_universities(self):
         query = "SELECT id, university FROM university"
         connection = mysql.connector.connect(
@@ -199,6 +215,22 @@ class DatabaseController:
         cursor.close()
         connection.close()
         return offer
+
+        
+    def get_offer_ids_by_user_id(self, id):
+        query_offer = "SELECT id FROM offer WHERE user_id = %s"
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query_offer, (id,))
+        result_tupel = cursor.fetchall()
+        result = []
+        for element in result_tupel:
+            offer_id, = element
+            result.append(offer_id)
+        cursor.close()
+        connection.close()
+        return result
 
     def create_offer(self, offer):
         query_offer = """INSERT INTO 
