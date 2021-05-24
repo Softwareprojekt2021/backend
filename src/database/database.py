@@ -131,6 +131,20 @@ class DatabaseController:
         connection.close()
         return result
 
+    def get_all_categories(self):
+        query = "SELECT id, title FROM category"
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query)
+        query_result = cursor.fetchall()
+        result = []
+        for element in query_result:
+            result.append(data.category.Category(*element))
+        cursor.close()
+        connection.close()
+        return result
+
     def get_all_users(self):
         query = "SELECT first_name, last_name, e_mail, password, course, TO_BASE64(profile_picture), university_id, admin, id FROM user"
         connection = mysql.connector.connect(

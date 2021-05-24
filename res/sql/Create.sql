@@ -119,7 +119,7 @@ DROP TABLE IF EXISTS `studiboerse`.`picture` ;
 
 CREATE TABLE IF NOT EXISTS `studiboerse`.`picture` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `data` BLOB NOT NULL,
+  `data` MEDIUMBLOB NOT NULL,
   `offer_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_picture_offer1_idx` (`offer_id` ASC) VISIBLE,
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `studiboerse`.`user` (
   `e_mail` VARCHAR(50) NOT NULL,
   `password` VARCHAR(50) NOT NULL,
   `course` VARCHAR(50) NOT NULL,
-  `profile_picture` BLOB NULL,
+  `profile_picture` MEDIUMBLOB NULL,
   `admin` TINYINT NULL,
   `university_id` INT NOT NULL,
   PRIMARY KEY (`id`, `university_id`),

@@ -37,6 +37,18 @@ def universities():
     result += "]"
     return result, 200, {"Content-Type": "application/json"}
 
+@app.route("/categories", methods=["GET"])
+def categories():
+    categories = databaseController.get_all_categories()
+    result = "["
+    last = len(categories)-1
+    for i, element in enumerate(categories):
+        if(i != last):
+            result += f'"{element.get_name()}",'
+        else:
+            result += f'"{element.get_name()}"'
+    result += "]"
+    return result, 200, {"Content-Type": "application/json"}
 
 @app.route("/users", methods=["GET"])
 def users():
@@ -76,7 +88,6 @@ def user():
     result += """}"""
     return result, 200, {"Content-Type": "application/json"}
 
-
 @app.route("/user", methods=["DELETE"])
 def delete_user():
     auth_header = request.headers["Authorization"]
@@ -87,7 +98,6 @@ def delete_user():
         return "", 401
     databaseController.delete_user(user_id)
     return "", 200
-
 
 @app.route("/user/<user_id>", methods=["DELETE"])
 def delete_user_by_id(user_id):
@@ -104,7 +114,6 @@ def delete_user_by_id(user_id):
             return "", 404
     else:
         return "", 401
-
 
 @app.route("/user", methods=["POST"])
 def create_user():
