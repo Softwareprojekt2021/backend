@@ -58,6 +58,25 @@ def users():
     return result, 200, {"Content-Type": "application/json"}
 
 
+@app.route("/user", methods=["GET"])
+def user():
+    auth_header = request.headers["Authorization"]
+    try:
+        user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError as e:
+        print(e)
+        return "", 401
+    user = databaseController.get_user_by_id(user_id)
+    result = f"""{{"id":"{user.get_id()}","first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}"
+,"e_mail":"{user.get_e_mail()}","course":"{user.get_course()}"
+,"university":"{databaseController.get_university_by_id(user.get_university_id()).get_name()}","admin":"{str(user.get_admin()).lower()}" """
+    picture = user.get_profile_picture()
+    if (picture is not None):
+        result += f""","profile_picture":"{picture}" """
+    result += """}"""
+    return result, 200, {"Content-Type": "application/json"}
+
+
 @app.route("/user", methods=["POST"])
 def create_user():
     json = request.get_json()
