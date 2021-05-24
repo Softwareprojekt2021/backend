@@ -1,12 +1,15 @@
 from flask import Flask, request
 import jwt
 from mysql.connector import connect
+from werkzeug.serving import WSGIRequestHandler
 
 import database.database as database
 import configparser
 import data.user
 import data.offer
 
+#Fix for HTTP Connection closed while receiving Data
+WSGIRequestHandler.protocol_version = "HTTP/1.1"
 app = Flask(__name__)
 
 config = configparser.ConfigParser()
