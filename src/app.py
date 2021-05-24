@@ -8,7 +8,7 @@ import configparser
 import data.user
 import data.offer
 
-//Fix for HTTP Connection closed while receiving Data
+#Fix for HTTP Connection closed while receiving Data
 WSGIRequestHandler.protocol_version = "HTTP/1.1"
 app = Flask(__name__)
 
