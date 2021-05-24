@@ -76,6 +76,7 @@ def user():
     result += """}"""
     return result, 200, {"Content-Type": "application/json"}
 
+
 @app.route("/user", methods=["DELETE"])
 def delete_user():
     auth_header = request.headers["Authorization"]
@@ -86,6 +87,7 @@ def delete_user():
         return "", 401
     databaseController.delete_user(user_id)
     return "", 200
+
 
 @app.route("/user/<user_id>", methods=["DELETE"])
 def delete_user_by_id(user_id):
@@ -102,6 +104,7 @@ def delete_user_by_id(user_id):
             return "", 404
     else:
         return "", 401
+
 
 @app.route("/user", methods=["POST"])
 def create_user():

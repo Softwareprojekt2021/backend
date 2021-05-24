@@ -30,38 +30,38 @@ Bilddaten: {self.get_pictures_base64()}"""
 
     def get_title(self):
         return self.title
-    
-    def set_title(self,title):
+
+    def set_title(self, title):
         self.title = title
 
     def get_compensation_type(self):
         return self.compensation_type
 
-    def set_compensation_type(self,compensation_type):
+    def set_compensation_type(self, compensation_type):
         self.compensation_type = compensation_type
 
     def get_price(self):
         return self.price
-    
-    def set_price(self,price):
+
+    def set_price(self, price):
         self.price = price
 
     def get_description(self):
         return self.description
-    
-    def set_description(self,description):
+
+    def set_description(self, description):
         self.description = description
 
     def get_sold(self):
         return self.sold
-    
-    def set_sold(self,sold):
+
+    def set_sold(self, sold):
         self.sold = sold
 
     def get_category_id(self):
         return self.category_id
-    
-    def set_category_id(self,category_id):
+
+    def set_category_id(self, category_id):
         self.category_id = category_id
 
     def get_user_id(self):
@@ -70,9 +70,9 @@ Bilddaten: {self.get_pictures_base64()}"""
     def get_pictures(self):
         return self.pictures
 
-
     def add_picture(self, picture):
-        self.pictures.append(picture)
+        if (picture is not None):
+            self.pictures.append(picture.replace("\n", ""))
 
     def clear_picture(self):
         self.pictures = []

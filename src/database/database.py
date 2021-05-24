@@ -115,7 +115,7 @@ class DatabaseController:
         connection.commit()
         cursor.close()
         connection.close()
-        return rows>0
+        return rows > 0
 
     def get_all_universities(self):
         query = "SELECT id, university FROM university"
@@ -216,7 +216,6 @@ class DatabaseController:
         connection.close()
         return offer
 
-        
     def get_offer_ids_by_user_id(self, id):
         query_offer = "SELECT id FROM offer WHERE user_id = %s"
         connection = mysql.connector.connect(
