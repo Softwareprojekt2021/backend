@@ -180,7 +180,7 @@ def get_offer(offer_id):
     if (offer is None):
         return "", 404
     result = f"""{{"id":"{offer.get_id()}","title":"{offer.get_title()}","compensation_type":"{offer.get_compensation_type()}"
-    ,"price":"{offer.get_price()}","description":"{offer.get_description()}"
+    ,"price":"{offer.get_price()}","description":"{offer.get_description()}","category":"{database_controller.get_category_by_id(offer.get_category_id()).get_name()}"
     ,"sold":{str(offer.get_sold()).lower()},"user_id":"{offer.get_user_id()}", "pictures":["""
     pictures = offer.get_pictures()
     last = len(pictures)-1
@@ -260,6 +260,10 @@ def update_offer():
     if ("category" in json):
         offer.set_category_id(
             database_controller.get_category_by_name(json["category"]).get_id())
+    if ("pictures" in json):
+        offer.clear_picture()
+        for pictures in json["pictures"]:
+            offer.add_picture(pictures)
     database_controller.update_offer(offer)
     return "", 200
 
@@ -282,8 +286,8 @@ def offers():
     for i, offer_id in enumerate(offer_ids):
         offer = database_controller.get_offer_by_id(offer_id)
         result += f"""{{"id":"{offer.get_id()}","title":"{offer.get_title()}","compensation_type":"{offer.get_compensation_type()}"
-        ,"price":"{offer.get_price()}","description":"{offer.get_description()}"
-        ,"sold":{str(offer.get_sold()).lower()},"user_id":"{offer.get_user_id()}", "pictures":["""
+,"price":"{offer.get_price()}","description":"{offer.get_description()}","category":"{database_controller.get_category_by_id(offer.get_category_id()).get_name()}"
+,"sold":{str(offer.get_sold()).lower()},"user_id":"{offer.get_user_id()}", "pictures":["""
         pictures = offer.get_pictures()
         last_j = len(pictures)-1
         for j, element in enumerate(pictures):
