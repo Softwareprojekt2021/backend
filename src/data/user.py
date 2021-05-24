@@ -9,7 +9,10 @@ class User:
         self.course = course
         self.profile_picture = None
         self.university_id = university_id
-        self.admin = admin
+        if(admin is not None):
+            self.admin = admin
+        else:
+            self.admin = False
         self.id = id
 
     def __str__(self):
@@ -20,7 +23,7 @@ Nachname: {self.last_name}
 E-Mail: {self.e_mail}
 Password: {self.password}
 Kurs: {self.course}
-Profilbild: {self.profile_picture.hex()}
+Profilbild: {self.get_profile_picture_binary()}
 Admin: {self.admin}
 Uni_id: {self.university_id}"""
 
@@ -57,16 +60,10 @@ Uni_id: {self.university_id}"""
     def set_course(self,course):
         self.course = course
 
-    def get_profile_picture_base64(self):
-        return base64.b64encode(self.profile_picture).decode()
-    
-    def set_profile_picture_base64(self,profile_picture):
-        self.profile_picture = base64.b64decode(profile_picture)
-
-    def get_profile_picture_binary(self):
+    def get_profile_picture(self):
         return self.profile_picture
     
-    def set_profile_picture_binary(self,profile_picture):
+    def set_profile_picture(self,profile_picture):
         self.profile_picture = profile_picture
 
     def get_admin(self):

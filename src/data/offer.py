@@ -1,7 +1,8 @@
 import base64
 
+
 class Offer:
-    def __init__(self, title, compensation_type, price, description, sold = False, category_id = 0, user_id = 0, id = 0):
+    def __init__(self, title, compensation_type, price, description, sold=False, category_id=0, user_id=0, id=0):
         self.title = title
         self.compensation_type = compensation_type
         self.price = price
@@ -22,29 +23,56 @@ Beschreibung: {self.description}
 Verkauft?: {self.sold}
 Kategorie id: {self.category_id}
 User id: {self.user_id}
-Bilddaten: {map(hex,self.pictures)}"""
+Bilddaten: {self.get_pictures_base64()}"""
 
     def get_id(self):
         return self.id
+
     def get_title(self):
         return self.title
+    
+    def set_title(self,title):
+        self.title = title
+
     def get_compensation_type(self):
         return self.compensation_type
+
+    def set_compensation_type(self,compensation_type):
+        self.compensation_type = compensation_type
+
     def get_price(self):
         return self.price
+    
+    def set_price(self,price):
+        self.price = price
+
     def get_description(self):
         return self.description
+    
+    def set_description(self,description):
+        self.description = description
+
     def get_sold(self):
         return self.sold
+    
+    def set_sold(self,sold):
+        self.sold = sold
+
     def get_category_id(self):
         return self.category_id
+    
+    def set_category_id(self,category_id):
+        self.category_id = category_id
+
     def get_user_id(self):
         return self.user_id
-    def get_pictures_binary(self):
+
+    def get_pictures(self):
         return self.pictures
-    def get_pictures_base64(self):
-        return map(lambda e : base64.b64encode(e).decode(),self.pictures)
-    def add_picture_binary(self,picture):
+
+
+    def add_picture(self, picture):
         self.pictures.append(picture)
-    def add_picture_base64(self,picture):
-        self.pictures.append(base64.b64decode(picture))
+
+    def clear_picture(self):
+        self.pictures = []
