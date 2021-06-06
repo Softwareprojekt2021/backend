@@ -4,6 +4,7 @@ import data.user
 import data.university
 import data.category
 import data.offer
+import data.rating
 
 
 class DatabaseController:
@@ -57,6 +58,20 @@ class DatabaseController:
         cursor.close()
         connection.close()
         return user
+
+    def get_ratings_by_user_id(self, user_id):
+        query = "SELECT rating,comment,user_id,id FROM rating WHERE user_id = %s"
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchall()
+        ratings = []
+        for element in result:
+            ratings.append(data.rating.Rating(*element))
+        cursor.close()
+        connection.close()
+        return ratings
 
     def create_user(self, user):
         if (self.get_user_by_email(user.get_e_mail()) is not None):
@@ -257,6 +272,57 @@ class DatabaseController:
         connection.close()
         return result
 
+    def get_recommend_offer_ids_by_user(self, user):
+        query_offer = "SELECT offer.id FROM offer,user WHERE offer.user_id = user.id AND user.university_id = %s AND offer.sold <> 1"
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query_offer, (user.get_university_id(),))
+        result_tupel = cursor.fetchall()
+        result = []
+        for element in result_tupel:
+            offer_id, = element
+            result.append(offer_id)
+        cursor.close()
+        connection.close()
+        return result
+
+    def get_filtered_offer_ids(self, title, category, university, compensation_type, max_price, min_price):
+        query_offer = """SELECT offer.id FROM offer,category,user,university 
+        WHERE offer.category_id = category.id AND offer.user_id = user.id AND user.university_id = university.id 
+        AND offer.sold <> 1 """
+        value_list = []
+        if (title is not None):
+            value_list.append("%" + title + "%")
+            query_offer += """AND offer.title LIKE %s """
+        if (category is not None):
+            value_list.append(category)
+            query_offer += """AND category.title = %s """
+        if (university is not None):
+            value_list.append(university)
+            query_offer += """AND university.university = %s """
+        if (compensation_type is not None):
+            value_list.append(compensation_type)
+            query_offer += """AND offer.compensation_type = %s """
+        if (max_price is not None):
+            value_list.append(max_price)
+            query_offer += """AND offer.price <= %s """
+        if (min_price is not None):
+            value_list.append(min_price)
+            query_offer += """AND offer.price >= %s """
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query_offer, tuple(value_list))
+        result_tupel = cursor.fetchall()
+        result = []
+        for element in result_tupel:
+            offer_id, = element
+            result.append(offer_id)
+        cursor.close()
+        connection.close()
+        return result
+
     def create_offer(self, offer):
         query_offer = """INSERT INTO 
         offer (title,compensation_type,price,description,sold,category_id,user_id) 
@@ -294,12 +360,12 @@ class DatabaseController:
         else:
             sold = 0
         cursor.execute(query_offer, (offer.get_title(), offer.get_compensation_type(),
-                               offer.get_price(), offer.get_description(), sold, offer.get_category_id(), offer.get_user_id(), offer.get_id()))
+                                     offer.get_price(), offer.get_description(), sold, offer.get_category_id(), offer.get_user_id(), offer.get_id()))
         cursor.fetchall()
         cursor.execute(query_delete_picture, (offer.get_id(),))
         cursor.fetchall()
         for picture in offer.get_pictures():
-            cursor.execute(query_insert_picture, (picture,offer.get_id()))
+            cursor.execute(query_insert_picture, (picture, offer.get_id()))
             cursor.fetchall()
         connection.commit()
         cursor.close()
