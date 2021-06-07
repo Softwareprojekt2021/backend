@@ -24,7 +24,7 @@ Nachname: {self.last_name}
 E-Mail: {self.e_mail}
 Password: {self.password}
 Kurs: {self.course}
-Profilbild: {self.get_profile_picture_binary()}
+Profilbild: {self.profile_picture}
 Admin: {self.admin}
 Uni_id: {self.university_id}"""
 
