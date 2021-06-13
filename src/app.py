@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, json
 from flask_cors import CORS
 import jwt
 from werkzeug.serving import WSGIRequestHandler
@@ -313,14 +313,14 @@ def offers():
 def recommend_offers():
     if ("Authorization" in request.headers):
         auth_header = request.headers["Authorization"]
+        try:
+            user_id, admin = decode_token(auth_header)
+        except jwt.exceptions.InvalidTokenError:
+            return "", 401
+        user = database_controller.get_user_by_id(user_id)
+        offer_ids = database_controller.get_recommend_offer_ids_by_user(user)
     else:
-        return "", 401
-    try:
-        user_id, admin = decode_token(auth_header)
-    except jwt.exceptions.InvalidTokenError:
-        return "", 401
-    user = database_controller.get_user_by_id(user_id)
-    offer_ids = database_controller.get_recommend_offer_ids_by_user(user)
+        offer_ids = database_controller.get_recommend_offer_ids_without_user()
     if (len(offer_ids) == 0):
         return "", 404
 
@@ -328,7 +328,7 @@ def recommend_offers():
     result = """["""
     for i, offer_id in enumerate(offer_ids):
         offer = database_controller.get_offer_by_id(offer_id)
-        result += encode_offer(offer)
+        result += encode_offer(offer,True)
         if(i != last_offer):
             result += """,
 """
@@ -361,7 +361,7 @@ def filtered_offers():
     result = """["""
     for i, offer_id in enumerate(offer_ids):
         offer = database_controller.get_offer_by_id(offer_id)
-        result += encode_offer(offer)
+        result += encode_offer(offer,True)
         if(i != last_offer):
             result += """,
 """
@@ -383,29 +383,30 @@ def decode_token(auth_header):
     return token['userId'], token['admin']
 
 
-def encode_offer(offer):
+def encode_offer(offer,one_image = False):
     user = database_controller.get_user_by_id(offer.get_user_id())
     result = f"""{{"id":{offer.get_id()},"title":"{offer.get_title()}","compensation_type":"{offer.get_compensation_type()}"
-,"price":"{offer.get_price()}","description":"{offer.get_description()}","category":"{database_controller.get_category_by_id(offer.get_category_id()).get_name()}"
+,"price":"{offer.get_price()}","description":{json.dumps(offer.get_description())},"category":"{database_controller.get_category_by_id(offer.get_category_id()).get_name()}"
 ,"sold":{str(offer.get_sold()).lower()}
-,"user":{{"id":{user.get_id()},"first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}"
-,"e_mail":"{user.get_e_mail()}","course":"{user.get_course()}"
-,"university":"{database_controller.get_university_by_id(user.get_university_id()).get_name()}", "ratings":["""
+,"user":{{"first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}"
+, "ratings":["""
     ratings = database_controller.get_ratings_by_user_id(offer.get_user_id())
     last_rating = len(ratings)-1
     for i, element in enumerate(ratings):
+        result += f"""{{"rating":{element.get_rating()},"comment":{json.dumps(element.get_comment())}}}"""
         if(i != last_rating):
-            result += f"""{{"rating":{element.get_rating()},"comment":"{element.get_comment()}"}},"""
-        else:
-            result += f"""{{"rating":{element.get_rating()},"comment":"{element.get_comment()}"}}"""
+            result += f""","""
     result += f"""]}}, "pictures":["""
     pictures = offer.get_pictures()
-    last_picture = len(pictures)-1
-    for i, element in enumerate(pictures):
-        if(i != last_picture):
-            result += f""" "{element}","""
-        else:
-            result += f""" "{element}" """
+    if (not one_image):
+        last_picture = len(pictures)-1
+        for i, element in enumerate(pictures):
+            if(i != last_picture):
+                result += f""" "{element}","""
+            else:
+                result += f""" "{element}" """
+    elif(len(pictures)>0):
+                result += f""" "{pictures[0]}" """
     result += """]}"""
     return result
 

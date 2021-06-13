@@ -110,7 +110,6 @@ class DatabaseController:
         cursor.execute(query, (user.get_first_name(), user.get_last_name(), user.get_e_mail(), user.get_password(),
                                user.get_course(), user.get_profile_picture(), user.admin, user.get_university_id(), user.get_id()))
         cursor.fetchall()
-        print(cursor.statement)
         connection.commit()
         cursor.close()
         connection.close()
@@ -287,6 +286,21 @@ class DatabaseController:
         connection.close()
         return result
 
+    def get_recommend_offer_ids_without_user(self):
+        query_offer = "SELECT offer.id FROM offer WHERE offer.sold <> 1 ORDER BY offer.id DESC LIMIT 0,10"
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query_offer)
+        result_tupel = cursor.fetchall()
+        result = []
+        for element in result_tupel:
+            offer_id, = element
+            result.append(offer_id)
+        cursor.close()
+        connection.close()
+        return result
+
     def get_filtered_offer_ids(self, title, category, university, compensation_type, max_price, min_price):
         query_offer = """SELECT offer.id FROM offer,category,user,university 
         WHERE offer.category_id = category.id AND offer.user_id = user.id AND user.university_id = university.id 
@@ -340,7 +354,6 @@ class DatabaseController:
         cursor.fetchall()
         cursor.execute("SELECT LAST_INSERT_ID();")
         id, = cursor.fetchone()
-        print(id)
         for element in offer.get_pictures():
             cursor.execute(query_picture, (element, id))
         connection.commit()

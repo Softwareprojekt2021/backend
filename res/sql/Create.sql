@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `studiboerse`.`offer` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(50) NOT NULL,
   `compensation_type` VARCHAR(50) NOT NULL,
-  `price` DECIMAL(5,2) NULL,
+  `price` DECIMAL(13,2) NULL,
   `description` VARCHAR(1000) NULL,
   `sold` TINYINT NULL,
   `category_id` INT NOT NULL,
