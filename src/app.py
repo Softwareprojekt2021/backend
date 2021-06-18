@@ -26,7 +26,7 @@ def login():
         user = database_controller.get_user_by_email(json["email"])
         return jwt.encode({"userId": user.get_id(), "admin": user.get_admin()}, config["TOKEN"]['secretkey'], algorithm="HS256"), 200
     else:
-        return "", 404
+        return "", 204
 
 
 @app.route("/universities", methods=["GET"])
@@ -129,7 +129,7 @@ def delete_user_by_id(user_id):
         if(database_controller.delete_user(user_id)):
             return "", 200
         else:
-            return "", 404
+            return "", 204
     else:
         return "", 401
 
@@ -197,7 +197,7 @@ def get_offer(offer_id):
 
     offer = database_controller.get_offer_by_id(offer_id)
     if (offer is None):
-        return "", 404
+        return "", 204
     result = encode_offer(offer)
     return result, 200, {"Content-Type": "application/json"}
 
@@ -215,7 +215,7 @@ def delete_offer(offer_id):
 
     offer = database_controller.get_offer_by_id(offer_id)
     if(offer is None):
-        return "", 404
+        return "", 204
     elif(offer.get_user_id() == user_id or admin):
         database_controller.delete_offer(offer_id)
         return "", 200
@@ -258,7 +258,7 @@ def update_offer():
     json = request.get_json()
     offer = database_controller.get_offer_by_id(json["id"])
     if(offer is None):
-        return "", 404
+        return "", 204
     if(offer.get_user_id() != user_id):
         return "", 401
     if ("title" in json):
@@ -295,7 +295,7 @@ def offers():
 
     offer_ids = database_controller.get_offer_ids_by_user_id(user_id)
     if (len(offer_ids) == 0):
-        return "", 404
+        return "", 204
 
     last_offer = len(offer_ids)-1
     result = """["""
@@ -322,7 +322,7 @@ def recommend_offers():
     else:
         offer_ids = database_controller.get_recommend_offer_ids_without_user()
     if (len(offer_ids) == 0):
-        return "", 404
+        return "", 204
 
     last_offer = len(offer_ids)-1
     result = """["""
@@ -356,7 +356,7 @@ def filtered_offers():
     offer_ids = database_controller.get_filtered_offer_ids(
         title, category, university, compensation_type, max_price, min_price)
     if (len(offer_ids) == 0):
-        return "", 404
+        return "", 204
     last_offer = len(offer_ids)-1
     result = """["""
     for i, offer_id in enumerate(offer_ids):
