@@ -5,6 +5,7 @@ import data.university
 import data.category
 import data.offer
 import data.rating
+import data.watchlist_entry
 
 
 class DatabaseController:
@@ -59,26 +60,12 @@ class DatabaseController:
         connection.close()
         return user
 
-    def get_ratings_by_user_id(self, user_id):
-        query = "SELECT rating,comment,user_id,id FROM rating WHERE user_id = %s"
-        connection = mysql.connector.connect(
-            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
-        cursor = connection.cursor()
-        cursor.execute(query, (user_id,))
-        result = cursor.fetchall()
-        ratings = []
-        for element in result:
-            ratings.append(data.rating.Rating(*element))
-        cursor.close()
-        connection.close()
-        return ratings
-
     def create_user(self, user):
         if (self.get_user_by_email(user.get_e_mail()) is not None):
             return False
         query = """INSERT INTO 
         user (first_name,last_name,e_mail,password,course,profile_picture,admin,university_id) 
-        VALUES (%s,%s,%s,%s,%s,FROM_BASE64(%s),%s,%s);"""
+        VALUES (%s,%s,%s,%s,%s,FROM_BASE64(%s),%s,%s)"""
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
@@ -340,8 +327,8 @@ class DatabaseController:
     def create_offer(self, offer):
         query_offer = """INSERT INTO 
         offer (title,compensation_type,price,description,sold,category_id,user_id) 
-        VALUES (%s,%s,%s,%s,%s,%s,%s);"""
-        query_picture = """INSERT INTO picture (data,offer_id) VALUES (FROM_BASE64(%s),%s);"""
+        VALUES (%s,%s,%s,%s,%s,%s,%s)"""
+        query_picture = """INSERT INTO picture (data,offer_id) VALUES (FROM_BASE64(%s),%s)"""
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
@@ -352,7 +339,7 @@ class DatabaseController:
         cursor.execute(query_offer, (offer.get_title(), offer.get_compensation_type(), offer.get_price(),
                                      offer.get_description(), sold, offer.get_category_id(), offer.get_user_id()))
         cursor.fetchall()
-        cursor.execute("SELECT LAST_INSERT_ID();")
+        cursor.execute("SELECT LAST_INSERT_ID()")
         id, = cursor.fetchone()
         for element in offer.get_pictures():
             cursor.execute(query_picture, (element, id))
@@ -364,7 +351,7 @@ class DatabaseController:
     def update_offer(self, offer):
         query_offer = """UPDATE offer SET title=%s,compensation_type=%s,price=%s,description=%s,sold=%s,category_id=%s,user_id=%s WHERE id = %s"""
         query_delete_picture = """DELETE FROM picture WHERE offer_id= %s"""
-        query_insert_picture = """INSERT INTO picture (data,offer_id) VALUES (FROM_BASE64(%s),%s);"""
+        query_insert_picture = """INSERT INTO picture (data,offer_id) VALUES (FROM_BASE64(%s),%s)"""
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
@@ -394,6 +381,217 @@ class DatabaseController:
         cursor.execute(query_picture, (id,))
         cursor.fetchall()
         cursor.execute(query_offer, (id,))
+        cursor.fetchall()
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    def add_watchlist_entry(self, watchlist_entry):
+        query = """INSERT IGNORE INTO watchlist (user_id,offer_id) VALUES (%s,%s)"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database)
+        cursor = connection.cursor()
+        cursor.execute(query, (watchlist_entry.get_user_id(),
+                       watchlist_entry.get_offer_id()))
+        cursor.fetchall()
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    def delete_watchlist_entry(self, watchlist_entry):
+        query = """DELETE FROM watchlist WHERE user_id=%s AND offer_id=%s"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (watchlist_entry.get_user_id(),
+                       watchlist_entry.get_offer_id()))
+        cursor.fetchall()
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    def get_watchlist(self, user_id):
+        query = """SELECT user_id,offer_id FROM watchlist WHERE user_id=%s"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (user_id,))
+        result = []
+        for element in cursor.fetchall():
+            result.append(data.watchlist_entry.Watchlist_entry(*element))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return result
+
+    def create_chat(self, offer_id, user_id):
+        query_select = """SELECT id FROM chat WHERE user_id = %s AND offer_id = %s"""
+        query_insert = """INSERT IGNORE INTO chat (user_id,offer_id) VALUES (%s,%s)"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database)
+        cursor = connection.cursor()
+        cursor.execute(query_select, (user_id, offer_id))
+        result = cursor.fetchall()
+        if (cursor.rowcount > 0):
+            result, = result
+            id, = result
+        else:
+            cursor.execute(query_insert, (user_id, offer_id))
+            cursor.fetchall()
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            id, = cursor.fetchone()
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return id
+
+    def add_message(self, message):
+        query = """INSERT INTO message (message,timestamp,user_id,chat_id) VALUES (%s,%s,%s,%s)"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (message.get_text(),
+                       message.get_timestamp(),
+                       message.get_user_id(),
+                       message.get_chat_id()))
+        cursor.fetchall()
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        id, = cursor.fetchone()
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return id
+
+    def get_conversation(self, chat_id):
+        query = """SELECT user_id, chat_id, message, timestamp, id FROM message WHERE chat_id = %s ORDER BY timestamp ASC"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (chat_id,))
+        result = []
+        for element in cursor.fetchall():
+            result.append(data.message.Message(*element))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return result
+
+    def delete_message(self, chat_id, message_id):
+        query = """DELETE FROM message WHERE id=%s AND chat_id=%s"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (message_id, chat_id))
+        cursor.fetchall()
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    def get_conversations(self, user_id):
+        query = """SELECT DISTINCT chat.id FROM chat, offer WHERE chat.user_id = %s OR (offer.id = chat.offer_id AND offer.user_id = %s)"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (user_id, user_id))
+        result = []
+        for element in cursor.fetchall():
+            result += element
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return result
+
+    def delete_chat(self, chat_id):
+        query_message = """DELETE FROM message WHERE chat_id = %s"""
+        query_chat = """DELETE FROM chat WHERE id = %s"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query_message, (chat_id,))
+        cursor.fetchall()
+        cursor.execute(query_chat, (chat_id,))
+        cursor.fetchall()
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    def is_message_of_user(self, message_id, chat_id, user_id):
+        query = """SELECT id FROM message WHERE id = %s AND chat_id = %s AND user_id = %s"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (message_id, chat_id, user_id))
+        cursor.fetchall()
+        if (cursor.rowcount > 0):
+            result = True
+        else:
+            result = False
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return result
+
+    def is_chat_of_user(self, chat_id, user_id):
+        query = """SELECT chat.id FROM chat,offer WHERE chat.id = %s AND chat.user_id = %s OR (offer.id = chat.offer_id AND offer.user_id = %s)"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (chat_id, user_id, user_id))
+        cursor.fetchall()
+        if (cursor.rowcount > 0):
+            result = True
+        else:
+            result = False
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return result
+
+    def create_rating(self, rating):
+        query = """INSERT IGNORE INTO rating (rating,user_id_sender,user_id_receiver) VALUES (%s,%s,%s)"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database)
+        cursor = connection.cursor()
+        cursor.execute(query, (rating.get_rating(
+        ), rating.get_user_id_sender(), rating.get_user_id_receiver()))
+        cursor.fetchall()
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    def update_rating(self, rating):
+        query = """UPDATE rating SET rating=%s WHERE user_id_sender = %s AND user_id_receiver = %s"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (rating.get_rating(
+        ), rating.get_user_id_sender(), rating.get_user_id_receiver()))
+        cursor.fetchall()
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    def get_average_rating(self, user_id):
+        query = """SELECT AVG(rating) FROM rating WHERE user_id_receiver=%s GROUP BY user_id_receiver"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (user_id,))
+        rating, = cursor.fetchone()
+        connection.commit()
+        cursor.close()
+        connection.close()
+        if (rating is not None):
+            return rating
+        else:
+            return 0
+
+    def delete_rating(self, user_id_sender, user_id_receiver):
+        query = """DELETE FROM rating WHERE user_id_sender = %s AND user_id_receiver = %s"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (user_id_sender, user_id_receiver))
         cursor.fetchall()
         connection.commit()
         cursor.close()

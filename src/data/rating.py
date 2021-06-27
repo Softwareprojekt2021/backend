@@ -1,18 +1,18 @@
 
 
 class Rating:
-    def __init__(self, rating, comment, user_id, id = 0):
+    def __init__(self, rating, user_id_sender, user_id_receiver, id=0):
         self.id = id
         self.rating = rating
-        self.comment = comment
-        self.user_id = user_id
+        self.user_id_sender = user_id_sender
+        self.user_id_receiver = user_id_receiver
 
     def __str__(self):
         return f"""Bewertung
 id: {self.id}
 Bewertung: {self.rating}
-Kommentar: {self.comment}
-user id: {self.user_id}"""
+sender user id: {self.user_id_sender}
+receiver user id: {self.user_id_receiver}"""
 
     def get_id(self):
         return self.id
@@ -20,8 +20,8 @@ user id: {self.user_id}"""
     def get_rating(self):
         return self.rating
 
-    def get_comment(self):
-        return self.comment
+    def get_user_id_sender(self):
+        return self.user_id_sender
 
-    def get_user_id(self):
-        return self.user_id
+    def get_user_id_receiver(self):
+        return self.user_id_receiver

@@ -1,13 +1,19 @@
+import configparser
+import datetime
+
 from flask import Flask, request, json
 from flask_cors import CORS
 import jwt
 from werkzeug.serving import WSGIRequestHandler
-from data.university import University
 
 import database.database as database
-import configparser
 import data.user
 import data.offer
+import data.rating
+import data.watchlist_entry
+import data.university
+import data.message
+
 
 # Fix for HTTP Connection closed while receiving Data
 WSGIRequestHandler.protocol_version = "HTTP/1.1"
@@ -328,7 +334,7 @@ def recommend_offers():
     result = """["""
     for i, offer_id in enumerate(offer_ids):
         offer = database_controller.get_offer_by_id(offer_id)
-        result += encode_offer(offer,True)
+        result += encode_offer(offer, True)
         if(i != last_offer):
             result += """,
 """
@@ -361,12 +367,242 @@ def filtered_offers():
     result = """["""
     for i, offer_id in enumerate(offer_ids):
         offer = database_controller.get_offer_by_id(offer_id)
-        result += encode_offer(offer,True)
+        result += encode_offer(offer, True)
         if(i != last_offer):
             result += """,
 """
     result += """]"""
     return result, 200, {"Content-Type": "application/json"}
+
+
+@app.route("/watchlist/<offer_id>", methods=["POST"])
+def add_watchlist_entry(offer_id):
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+    database_controller.add_watchlist_entry(
+        data.watchlist_entry.Watchlist_entry(user_id, offer_id))
+    return "", 200
+
+
+@app.route("/watchlist/<offer_id>", methods=["DELETE"])
+def delete_watchlist_entry(offer_id):
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+    database_controller.delete_watchlist_entry(
+        data.watchlist_entry.Watchlist_entry(user_id, offer_id))
+    return "", 200
+
+
+@app.route("/watchlist", methods=["GET"])
+def get_watchlist():
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+    watchlist = database_controller.get_watchlist(user_id)
+    last_element = len(watchlist)-1
+    result = "["
+    for i, element in enumerate(watchlist):
+        result += encode_offer(database_controller.get_offer_by_id(
+            element.get_offer_id()), True)
+        if(i != last_element):
+            result += f""",
+"""
+    result += "]"
+    return result, 200
+
+
+@app.route("/message/<offer_id>/create", methods=["POST"])
+def create_chat(offer_id):
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+
+    chat_id = database_controller.create_chat(offer_id, user_id)
+    return f"""{{"chat_id":{chat_id}}}""", 200
+
+
+@app.route("/message/<chat_id>", methods=["POST"])
+def add_message(chat_id):
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+    if(not database_controller.is_chat_of_user(chat_id, user_id)):
+        return "", 401
+    json = request.get_json()
+    text = json["text"]
+    timestamp = datetime.datetime.now()
+    database_controller.add_message(data.message.Message(
+        user_id, chat_id, text, timestamp))
+    return "", 200
+
+
+@app.route("/message/<chat_id>", methods=["GET"])
+def get_conversation(chat_id):
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+    if(not (database_controller.is_chat_of_user(chat_id, user_id) or admin)):
+        return "", 401
+    conversation = database_controller.get_conversation(chat_id)
+    last_element = len(conversation)-1
+    result = "["
+    for i, element in enumerate(conversation):
+        result += f"""{{"message_id":{element.get_id()},"user_id":{element.get_user_id()},"text":"{element.get_text()}","timestamp":"{element.get_timestamp()}"}}"""
+        if(i != last_element):
+            result += f""","""
+    result += "]"
+    return result, 200
+
+
+@app.route("/message/<chat_id>/<message_id>", methods=["DELETE"])
+def delete_message(chat_id, message_id):
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+
+    if (database_controller.is_message_of_user(message_id, chat_id, user_id) or admin):
+        database_controller.delete_message(chat_id, message_id)
+        return "", 200
+    else:
+        return "", 401
+
+
+@app.route("/messages", methods=["GET"])
+def get_conversations():
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+
+    conversations = database_controller.get_conversations(user_id)
+    last_element = len(conversations)-1
+    result = "["
+    for i, element in enumerate(conversations):
+        result += f"""{element}"""
+        if(i != last_element):
+            result += f""","""
+    result += "]"
+    return result, 200
+
+
+@app.route("/messages/<chat_id>", methods=["DELETE"])
+def delete_chat(chat_id):
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+    if (database_controller.is_chat_of_user(chat_id, user_id) or admin):
+        database_controller.delete_chat(chat_id)
+        return "", 200
+    else:
+        return "", 401
+
+
+@app.route("/rating/<user_id>", methods=["POST"])
+def create_rating(user_id):
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        login_user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+    if(login_user_id == int(user_id)):
+        return "", 401
+    json = request.get_json()
+    database_controller.create_rating(
+        data.rating.Rating(json["rating"], login_user_id, user_id))
+    return "", 200
+
+
+@app.route("/rating/<user_id>", methods=["PUT"])
+def update_rating(user_id):
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        login_user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+    json = request.get_json()
+    database_controller.update_rating(
+        data.rating.Rating(json["rating"], login_user_id, user_id))
+    return "", 200
+
+
+@app.route("/rating/<user_id>", methods=["GET"])
+def get_rating(user_id):
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        login_user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+    average_rating = database_controller.get_average_rating(user_id)
+    return f"""{{"average_rating":{average_rating}}}""", 200
+
+
+@app.route("/rating/<user_id>", methods=["DELETE"])
+def delete_rating(user_id):
+    if ("Authorization" in request.headers):
+        auth_header = request.headers["Authorization"]
+    else:
+        return "", 401
+    try:
+        login_user_id, admin = decode_token(auth_header)
+    except jwt.exceptions.InvalidTokenError:
+        return "", 401
+    database_controller.delete_rating(login_user_id, user_id)
+    return "", 200
 
 
 def verify_user(e_mail, password):
@@ -383,30 +619,22 @@ def decode_token(auth_header):
     return token['userId'], token['admin']
 
 
-def encode_offer(offer,one_image = False):
+def encode_offer(offer, one_image=False):
     user = database_controller.get_user_by_id(offer.get_user_id())
     result = f"""{{"id":{offer.get_id()},"title":"{offer.get_title()}","compensation_type":"{offer.get_compensation_type()}"
 ,"price":"{offer.get_price()}","description":{json.dumps(offer.get_description())},"category":"{database_controller.get_category_by_id(offer.get_category_id()).get_name()}"
 ,"sold":{str(offer.get_sold()).lower()}
-,"user":{{"first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}"
-, "ratings":["""
-    ratings = database_controller.get_ratings_by_user_id(offer.get_user_id())
-    last_rating = len(ratings)-1
-    for i, element in enumerate(ratings):
-        result += f"""{{"rating":{element.get_rating()},"comment":{json.dumps(element.get_comment())}}}"""
-        if(i != last_rating):
-            result += f""","""
-    result += f"""]}}, "pictures":["""
+,"user":{{"first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}","e_mail":"{user.get_e_mail()}"
+,"average_rating":{database_controller.get_average_rating(offer.get_user_id())}}}, "pictures":["""
     pictures = offer.get_pictures()
     if (not one_image):
         last_picture = len(pictures)-1
         for i, element in enumerate(pictures):
+            result += f""" "{element}" """
             if(i != last_picture):
-                result += f""" "{element}","""
-            else:
-                result += f""" "{element}" """
-    elif(len(pictures)>0):
-                result += f""" "{pictures[0]}" """
+                result += f""","""
+    elif(len(pictures) > 0):
+        result += f""" "{pictures[0]}" """
     result += """]}"""
     return result
 
