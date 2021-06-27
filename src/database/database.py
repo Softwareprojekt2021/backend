@@ -577,11 +577,12 @@ class DatabaseController:
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
         cursor.execute(query, (user_id,))
-        rating, = cursor.fetchone()
+        rating = cursor.fetchone()
         connection.commit()
         cursor.close()
         connection.close()
         if (rating is not None):
+            rating, = rating
             return rating
         else:
             return 0

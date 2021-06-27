@@ -344,15 +344,6 @@ def recommend_offers():
 
 @app.route("/offers/filtered", methods=["GET"])
 def filtered_offers():
-    if ("Authorization" in request.headers):
-        auth_header = request.headers["Authorization"]
-    else:
-        return "", 401
-    try:
-        user_id, admin = decode_token(auth_header)
-    except jwt.exceptions.InvalidTokenError:
-        return "", 401
-    user = database_controller.get_user_by_id(user_id)
     title = request.args.get("title", type=str)
     category = request.args.get("category", type=str)
     university = request.args.get("university", type=str)
@@ -416,6 +407,8 @@ def get_watchlist():
     except jwt.exceptions.InvalidTokenError:
         return "", 401
     watchlist = database_controller.get_watchlist(user_id)
+    if (len(watchlist) == 0):
+        return "",204
     last_element = len(watchlist)-1
     result = "["
     for i, element in enumerate(watchlist):
@@ -516,6 +509,8 @@ def get_conversations():
         return "", 401
 
     conversations = database_controller.get_conversations(user_id)
+    if (len(conversations) == 0):
+        return "",204
     last_element = len(conversations)-1
     result = "["
     for i, element in enumerate(conversations):
