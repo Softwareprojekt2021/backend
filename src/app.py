@@ -508,9 +508,10 @@ def get_conversations():
     for i, element in enumerate(conversations):
         result += f"""{{"chat_id":{element.get_id()},"user":{encode_user(database_controller.get_user_by_id(element.get_user_id()))},"offer":{encode_offer(database_controller.get_offer_by_id(element.get_offer_id()),True)}}}"""
         if(i != last_element):
-            result += f""","""
+            result += f""",
+"""
     result += "]"
-    return result, 200
+    return result, 200, {"Content-Type": "application/json"}
 
 
 @app.route("/messages/<chat_id>", methods=["DELETE"])

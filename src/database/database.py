@@ -489,7 +489,7 @@ class DatabaseController:
         connection.close()
 
     def get_conversations(self, user_id):
-        query = """SELECT chat.user_id, chat.offer_id, chat.id FROM chat, offer WHERE chat.user_id = %s OR (offer.id = chat.offer_id AND offer.user_id = %s)"""
+        query = """SELECT DISTINCT chat.user_id, chat.offer_id, chat.id FROM chat, offer WHERE chat.user_id = %s OR (offer.id = chat.offer_id AND offer.user_id = %s)"""
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
