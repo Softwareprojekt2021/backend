@@ -409,7 +409,8 @@ def get_watchlist():
             result += f""",
 """
     result += "]"
-    return result, 200
+    return result, 200, {"Content-Type": "application/json"}
+
 
 
 @app.route("/message/<offer_id>/create", methods=["POST"])
