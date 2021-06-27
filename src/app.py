@@ -192,15 +192,6 @@ def update_user():
 
 @app.route("/offer/<offer_id>", methods=["GET"])
 def get_offer(offer_id):
-    if ("Authorization" in request.headers):
-        auth_header = request.headers["Authorization"]
-    else:
-        return "", 401
-    try:
-        user_id, admin = decode_token(auth_header)
-    except jwt.exceptions.InvalidTokenError:
-        return "", 401
-
     offer = database_controller.get_offer_by_id(offer_id)
     if (offer is None):
         return "", 204
