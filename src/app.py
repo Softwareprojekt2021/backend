@@ -423,8 +423,9 @@ def create_chat(offer_id):
         user_id, admin = decode_token(auth_header)
     except jwt.exceptions.InvalidTokenError:
         return "", 401
-
-    chat_id = database_controller.create_chat(offer_id, user_id)
+    if(database_controller.get_offer_by_id(offer_id).get_user_id()==user_id):
+        return "", 401
+    chat_id = database_controller.create_chat(data.chat.Chat(user_id, offer_id))
     return f"""{{"chat_id":{chat_id}}}""", 200
 
 
@@ -499,14 +500,13 @@ def get_conversations():
         user_id, admin = decode_token(auth_header)
     except jwt.exceptions.InvalidTokenError:
         return "", 401
-
     conversations = database_controller.get_conversations(user_id)
     if (len(conversations) == 0):
         return "",204
     last_element = len(conversations)-1
     result = "["
     for i, element in enumerate(conversations):
-        result += f"""{element}"""
+        result += f"""{{"chat_id":{element.get_id()},"user":{encode_user(database_controller.get_user_by_id(element.get_user_id()))},"offer":{encode_offer(database_controller.get_offer_by_id(element.get_offer_id()),True)}}}"""
         if(i != last_element):
             result += f""","""
     result += "]"
@@ -611,8 +611,8 @@ def encode_offer(offer, one_image=False):
     result = f"""{{"id":{offer.get_id()},"title":"{offer.get_title()}","compensation_type":"{offer.get_compensation_type()}"
 ,"price":"{offer.get_price()}","description":{json.dumps(offer.get_description())},"category":"{database_controller.get_category_by_id(offer.get_category_id()).get_name()}"
 ,"sold":{str(offer.get_sold()).lower()}
-,"user":{{"first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}","e_mail":"{user.get_e_mail()}"
-,"average_rating":{database_controller.get_average_rating(offer.get_user_id())}}}, "pictures":["""
+,"user":{encode_user(user)}
+, "pictures":["""
     pictures = offer.get_pictures()
     if (not one_image):
         last_picture = len(pictures)-1
@@ -624,6 +624,9 @@ def encode_offer(offer, one_image=False):
         result += f""" "{pictures[0]}" """
     result += """]}"""
     return result
+
+def encode_user(user):
+    return f"""{{"id":"{user.get_id()}","first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}","e_mail":"{user.get_e_mail()}","average_rating":{database_controller.get_average_rating(user.get_id())}}}"""
 
 # if __name__ == "__main__":
 #    app.run(ssl_context=("cert\\cert.pem", "cert\\key.pem"))

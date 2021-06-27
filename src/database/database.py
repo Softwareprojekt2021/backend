@@ -6,6 +6,7 @@ import data.category
 import data.offer
 import data.rating
 import data.watchlist_entry
+import data.chat
 
 
 class DatabaseController:
@@ -424,19 +425,19 @@ class DatabaseController:
         connection.close()
         return result
 
-    def create_chat(self, offer_id, user_id):
+    def create_chat(self, chat):
         query_select = """SELECT id FROM chat WHERE user_id = %s AND offer_id = %s"""
         query_insert = """INSERT IGNORE INTO chat (user_id,offer_id) VALUES (%s,%s)"""
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database)
         cursor = connection.cursor()
-        cursor.execute(query_select, (user_id, offer_id))
+        cursor.execute(query_select, (chat.get_user_id(), chat.get_offer_id()))
         result = cursor.fetchall()
         if (cursor.rowcount > 0):
             result, = result
             id, = result
         else:
-            cursor.execute(query_insert, (user_id, offer_id))
+            cursor.execute(query_insert, (chat.get_user_id(), chat.get_offer_id()))
             cursor.fetchall()
             cursor.execute("SELECT LAST_INSERT_ID()")
             id, = cursor.fetchone()
@@ -488,14 +489,14 @@ class DatabaseController:
         connection.close()
 
     def get_conversations(self, user_id):
-        query = """SELECT DISTINCT chat.id FROM chat, offer WHERE chat.user_id = %s OR (offer.id = chat.offer_id AND offer.user_id = %s)"""
+        query = """SELECT chat.user_id, chat.offer_id, chat.id FROM chat, offer WHERE chat.user_id = %s OR (offer.id = chat.offer_id AND offer.user_id = %s)"""
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
         cursor.execute(query, (user_id, user_id))
         result = []
         for element in cursor.fetchall():
-            result += element
+            result.append(data.chat.Chat(*element))
         connection.commit()
         cursor.close()
         connection.close()
