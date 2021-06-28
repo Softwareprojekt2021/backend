@@ -461,14 +461,16 @@ def get_conversation(chat_id):
         return "", 401
     if(not (database_controller.is_chat_of_user(chat_id, user_id) or admin)):
         return "", 401
+    chat = database_controller.get_chat_by_id(chat_id)
+    result = f"""{{"chat":{encode_chat(chat)},"conversation":"""
     conversation = database_controller.get_conversation(chat_id)
     last_element = len(conversation)-1
-    result = "["
+    result += "["
     for i, element in enumerate(conversation):
         result += f"""{{"message_id":{element.get_id()},"user_id":{element.get_user_id()},"text":"{element.get_text()}","timestamp":"{element.get_timestamp()}"}}"""
         if(i != last_element):
             result += f""","""
-    result += "]"
+    result += "]}"
     return result, 200
 
 
@@ -506,7 +508,7 @@ def get_conversations():
     last_element = len(conversations)-1
     result = "["
     for i, element in enumerate(conversations):
-        result += f"""{{"chat_id":{element.get_id()},"user":{encode_user(database_controller.get_user_by_id(element.get_user_id()))},"offer":{encode_offer(database_controller.get_offer_by_id(element.get_offer_id()),True)}}}"""
+        result += encode_chat(element)
         if(i != last_element):
             result += f""",
 """
@@ -610,8 +612,8 @@ def decode_token(auth_header):
 def encode_offer(offer, one_image=False):
     user = database_controller.get_user_by_id(offer.get_user_id())
     result = f"""{{"id":{offer.get_id()},"title":"{offer.get_title()}","compensation_type":"{offer.get_compensation_type()}"
-,"price":"{offer.get_price()}","description":{json.dumps(offer.get_description())},"category":"{database_controller.get_category_by_id(offer.get_category_id()).get_name()}"
-,"sold":{str(offer.get_sold()).lower()}
+,"price":"{offer.get_price()}","description":{json.dumps(offer.get_description())}
+,"category":"{database_controller.get_category_by_id(offer.get_category_id()).get_name()}","sold":{str(offer.get_sold()).lower()}
 ,"user":{encode_user(user)}
 , "pictures":["""
     pictures = offer.get_pictures()
@@ -629,5 +631,9 @@ def encode_offer(offer, one_image=False):
 def encode_user(user):
     return f"""{{"id":"{user.get_id()}","first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}","e_mail":"{user.get_e_mail()}","average_rating":{database_controller.get_average_rating(user.get_id())}}}"""
 
+def encode_chat(chat):
+    return f"""{{"chat_id":{chat.get_id()}
+,"user":{encode_user(database_controller.get_user_by_id(chat.get_user_id()))}
+,"offer":{encode_offer(database_controller.get_offer_by_id(chat.get_offer_id()),True)}}}"""
 # if __name__ == "__main__":
 #    app.run(ssl_context=("cert\\cert.pem", "cert\\key.pem"))

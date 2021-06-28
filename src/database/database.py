@@ -502,6 +502,18 @@ class DatabaseController:
         connection.close()
         return result
 
+    def get_chat_by_id(self, chat_id):
+        query = """SELECT DISTINCT chat.user_id, chat.offer_id, chat.id FROM chat WHERE id = %s"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (chat_id,))
+        result = data.chat.Chat(*cursor.fetchone())
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return result
+
     def delete_chat(self, chat_id):
         query_message = """DELETE FROM message WHERE chat_id = %s"""
         query_chat = """DELETE FROM chat WHERE id = %s"""
