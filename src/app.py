@@ -462,7 +462,7 @@ def get_conversation(chat_id):
     if(not (database_controller.is_chat_of_user(chat_id, user_id) or admin)):
         return "", 401
     chat = database_controller.get_chat_by_id(chat_id)
-    result = f"""{{"chat":{encode_chat(chat)},"conversation":"""
+    result = f"""{{"chat_id":{chat.get_id()},"user":{encode_user(database_controller.get_user_by_id(chat.get_user_id()))},"offer":{encode_offer(database_controller.get_offer_by_id(chat.get_offer_id()),True)},"conversation":"""
     conversation = database_controller.get_conversation(chat_id)
     last_element = len(conversation)-1
     result += "["
@@ -471,7 +471,7 @@ def get_conversation(chat_id):
         if(i != last_element):
             result += f""","""
     result += "]}"
-    return result, 200
+    return result, 200, {"Content-Type": "application/json"}
 
 
 @app.route("/message/<chat_id>/<message_id>", methods=["DELETE"])
@@ -508,7 +508,7 @@ def get_conversations():
     last_element = len(conversations)-1
     result = "["
     for i, element in enumerate(conversations):
-        result += encode_chat(element)
+        result += f"""{{"chat_id":{element.get_id()},"user":{encode_user(database_controller.get_user_by_id(element.get_user_id()))},"offer":{encode_offer(database_controller.get_offer_by_id(element.get_offer_id()),True)}}}"""
         if(i != last_element):
             result += f""",
 """
@@ -631,9 +631,5 @@ def encode_offer(offer, one_image=False):
 def encode_user(user):
     return f"""{{"id":"{user.get_id()}","first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}","e_mail":"{user.get_e_mail()}","average_rating":{database_controller.get_average_rating(user.get_id())}}}"""
 
-def encode_chat(chat):
-    return f"""{{"chat_id":{chat.get_id()}
-,"user":{encode_user(database_controller.get_user_by_id(chat.get_user_id()))}
-,"offer":{encode_offer(database_controller.get_offer_by_id(chat.get_offer_id()),True)}}}"""
 # if __name__ == "__main__":
 #    app.run(ssl_context=("cert\\cert.pem", "cert\\key.pem"))
