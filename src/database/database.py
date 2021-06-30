@@ -245,7 +245,7 @@ class DatabaseController:
         return offer
 
     def get_offer_ids_by_user_id(self, id):
-        query_offer = "SELECT id FROM offer WHERE user_id = %s"
+        query_offer = "SELECT id FROM offer WHERE user_id = %s AND offer.sold <> 1"
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
@@ -599,6 +599,21 @@ class DatabaseController:
             return rating
         else:
             return 0
+
+    def get_rating(self, user_id_sender,user_id_receiver):
+        query = """SELECT rating, user_id_sender, user_id_receiver, id FROM rating WHERE user_id_sender=%s AND user_id_receiver=%s"""
+        connection = mysql.connector.connect(
+            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
+        cursor = connection.cursor()
+        cursor.execute(query, (user_id_sender,user_id_receiver))
+        rating = cursor.fetchone()
+        connection.commit()
+        cursor.close()
+        connection.close()
+        if (rating is not None):
+            return data.rating.Rating(*rating)
+        else:
+            return None
 
     def delete_rating(self, user_id_sender, user_id_receiver):
         query = """DELETE FROM rating WHERE user_id_sender = %s AND user_id_receiver = %s"""

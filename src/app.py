@@ -399,7 +399,7 @@ def get_watchlist():
         return "", 401
     watchlist = database_controller.get_watchlist(user_id)
     if (len(watchlist) == 0):
-        return "",204
+        return "", 204
     last_element = len(watchlist)-1
     result = "["
     for i, element in enumerate(watchlist):
@@ -412,7 +412,6 @@ def get_watchlist():
     return result, 200, {"Content-Type": "application/json"}
 
 
-
 @app.route("/message/<offer_id>/create", methods=["POST"])
 def create_chat(offer_id):
     if ("Authorization" in request.headers):
@@ -423,9 +422,10 @@ def create_chat(offer_id):
         user_id, admin = decode_token(auth_header)
     except jwt.exceptions.InvalidTokenError:
         return "", 401
-    if(database_controller.get_offer_by_id(offer_id).get_user_id()==user_id):
+    if(database_controller.get_offer_by_id(offer_id).get_user_id() == user_id):
         return "", 401
-    chat_id = database_controller.create_chat(data.chat.Chat(user_id, offer_id))
+    chat_id = database_controller.create_chat(
+        data.chat.Chat(user_id, offer_id))
     return f"""{{"chat_id":{chat_id}}}""", 200
 
 
@@ -504,7 +504,7 @@ def get_conversations():
         return "", 401
     conversations = database_controller.get_conversations(user_id)
     if (len(conversations) == 0):
-        return "",204
+        return "", 204
     last_element = len(conversations)-1
     result = "["
     for i, element in enumerate(conversations):
@@ -577,8 +577,10 @@ def get_rating(user_id):
         login_user_id, admin = decode_token(auth_header)
     except jwt.exceptions.InvalidTokenError:
         return "", 401
-    average_rating = database_controller.get_average_rating(user_id)
-    return f"""{{"average_rating":{average_rating}}}""", 200
+    rating = database_controller.get_rating(login_user_id, user_id)
+    if(rating is None):
+        return "", 404
+    return f"""{{"rating":{rating.get_rating()},"sender":{rating.get_user_id_sender()},"receiver":{rating.get_user_id_receiver()},"id":{rating.get_id()}}}""", 200, {"Content-Type": "application/json"}
 
 
 @app.route("/rating/<user_id>", methods=["DELETE"])
@@ -627,6 +629,7 @@ def encode_offer(offer, one_image=False):
         result += f""" "{pictures[0]}" """
     result += """]}"""
     return result
+
 
 def encode_user(user):
     return f"""{{"id":"{user.get_id()}","first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}","e_mail":"{user.get_e_mail()}","average_rating":{database_controller.get_average_rating(user.get_id())}}}"""
