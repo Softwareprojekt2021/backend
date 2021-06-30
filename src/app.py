@@ -632,7 +632,7 @@ def encode_offer(offer, one_image=False):
 
 
 def encode_user(user):
-    return f"""{{"id":"{user.get_id()}","first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}","e_mail":"{user.get_e_mail()}","average_rating":{database_controller.get_average_rating(user.get_id())}}}"""
+    return f"""{{"id":"{user.get_id()}","first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}","e_mail":"{user.get_e_mail()}","average_rating":{database_controller.get_average_rating(user.get_id())},"university":"{database_controller.get_university_by_id(user.get_university_id()).get_name()}"}}"""
 
 # if __name__ == "__main__":
 #    app.run(ssl_context=("cert\\cert.pem", "cert\\key.pem"))
