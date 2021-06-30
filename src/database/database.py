@@ -260,11 +260,11 @@ class DatabaseController:
         return result
 
     def get_recommend_offer_ids_by_user(self, user):
-        query_offer = "SELECT offer.id FROM offer,user WHERE offer.user_id = user.id AND user.university_id = %s AND offer.sold <> 1"
+        query_offer = "SELECT offer.id FROM offer,user WHERE offer.user_id = user.id AND user.university_id = %s AND offer.sold <> 1 AND offer.user_id <> %s"
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
-        cursor.execute(query_offer, (user.get_university_id(),))
+        cursor.execute(query_offer, (user.get_university_id(),user.get_id()))
         result_tupel = cursor.fetchall()
         result = []
         for element in result_tupel:
