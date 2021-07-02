@@ -1,0 +1,427 @@
+Fernuniversität in Hagen
+FOM - Hochschule für Oekonomie und Management (E-sen)
+Universität zu Köln
+Ludwig-Maximilians-Universität München
+RWTH Aachen
+Johann Wolfgang Goethe-Universität Frankfurt am Main
+Westfälische Wilhelms-Universität (Münster)
+Universität Hamburg
+Ruhr-Universität Bochum
+Universität Duisburg-Essen
+Technische Universität München
+Rheinische Friedrich-Wilhelms-Universität Bonn
+Friedrich-Alexander-Universität Erlangen-Nürnberg
+Heinrich-Heine-Universität Düsseldorf
+Freie Universität Berlin
+Humboldt-Universität zu Berlin
+Technische Universität Berlin
+Duale Hochschule Baden-Württemberg (Stuttgart)
+IU Internationale Hochschule (Erfurt)
+Technische Universität Dortmund
+Technische Universität Dresden
+Johannes Gutenberg-Universität Mainz
+Gottfried Wilhelm Leibniz Universität Hannover
+Georg-August-Universität Göttingen
+Universität Leipzig
+Ruprecht-Karls-Universität Heidelberg
+Justus-Liebig-Universität Gießen
+Julius-Maximilians-Universität Würzburg
+Christian-Albrechts-Universität zu Kiel
+Technische Hochschule Köln
+Eberhard Karls Universität Tübingen
+Universität Bielefeld
+Technische Universität Darmstadt
+Universität Kassel
+Universität Stuttgart
+Albert-Ludwigs-Universität Freiburg
+Karlsruher Institut für Technologie
+Philipps-Universität Marburg
+Bergische Universität Wuppertal
+Universität Potsdam
+Universität Regensburg
+Universität Paderborn
+Martin-Luther-Universität Halle-Wittenberg
+Technische Universität Braunschweig
+Universität Augsburg
+Universität Siegen
+Technische Hochschule Mittelhessen (Gießen, Friedberg, Wetzlar)
+Universität Bremen
+Universität Koblenz-Landau
+Hochschule für angewandte Wissenschaften München
+Friedrich-Schiller-Universität Jena
+Hochschule Darmstadt
+Hochschule für Angewandte Wissenschaften Hamburg
+Universität des Saarlandes (Saarbrücken, Homburg)
+Carl von Ossietzky Universität Oldenburg
+Frankfurt University of Applied Sciences
+FH Aachen
+Fachhochschule Münster
+Hochschule Niederrhein (Krefeld/Mönchengladbach)
+Technische Universität Kaiserslautern
+Fachhochschule Dortmund
+Fachhochschule Südwestfalen (Iserlohn)
+Hochschule für Technik und Wirtschaft Berlin
+Universität Osnabrück
+Otto-von-Guericke-Universität Magdeburg
+Hochschule Osnabrück
+Hochschule RheinMain (Wiesbaden und Rüsselsheim)
+Universität Rostock
+Universität Bayreuth
+Technische Hochschule Nürnberg Georg Simon Ohm
+Beuth Hochschule für Technik Berlin
+Universität Trier
+Universität Passau
+Universität Mannheim
+Otto-Friedrich-Universität Bamberg
+Hochschule für Wirtschaft und Recht Berlin
+Ostfalia Hochschule für angewandte Wissenschaften (Wolfenbüttel, Salzgitter, Wolfsburg, Suderburg)
+Universität Konstanz
+Ostbayerische Technische Hochschule Regensburg
+Universität Ulm
+Fachhochschule Bielefeld
+Universität Greifswald
+Hochschule Hannover
+Technische Universität Chemnitz
+Hochschule Koblenz
+Leuphana Universität Lüneburg
+Hamburger Fern-Hochschule
+Hochschule für angewandte Wissenschaften Würzburg-Schweinfurt
+Hochschule Bremen
+Westfälische Hochschule Gelsenkirchen Bocholt Recklinghausen
+Universität Hohenheim (Stuttgart)
+Hochschule Düsseldorf
+Hochschule Fulda
+Universität Hildesheim
+Diploma Hochschule (Bad Sooden-Allendorf)
+Hochschule Wismar
+Steinbeis-Hochschule Berlin
+Hochschule Bochum
+Hochschule Bonn-Rhein-Sieg
+Hochschule Heilbronn
+Hochschule Karlsruhe
+Technische Universität Hamburg
+Hochschule Rhein-Waal (Kleve, Kamp-Lintfort)
+Hochschule Trier
+Fachhochschule Kiel
+Hochschule Mittweida
+Europäische Fernhochschule Hamburg
+Hochschule für Polizei und öffentliche Verwaltung Nordrhein-Westfalen (Gelsenkirchen)
+Brandenburgische Technische Universität Cottbus-Senftenberg
+Hochschule für angewandte Wissenschaften Augsburg
+Jade Hochschule (Wilhelmshaven, Oldenburg, Elsfleth)
+Hochschule Weihenstephan-Triesdorf
+Technische Hochschule Ostwestfalen-Lippe (Lemgo)
+Hochschule für Technik, Wirtschaft und Kultur Leipzig
+Hochschule Kaiserslautern
+Hochschule Esslingen
+Europa-Universität Viadrina (Frankfurt (Oder))
+Hochschule Aalen
+Europa-Universität Flensburg
+Universität Erfurt
+Technische Hochschule Rosenheim
+Hochschule für angewandte Wissenschaften Kempten
+Hochschule Furtwangen
+Wilhelm Büchner Hochschule (Pfungstadt)
+Technische Hochschule Ingolstadt
+Deutsche Sporthochschule Köln
+Technische Hochschule Deggendorf
+Hochschule Fresenius (Idstein)
+Hochschule Magdeburg-Stendal
+Pädagogische Hochschule Ludwigsburg
+Hochschule Mainz
+Hochschule für Technik und Wirtschaft des Saarlandes (Saarbrücken)
+Hochschule Pforzheim
+Technische Universität Ilmenau
+SRH Fernhochschule Riedlingen
+Universität zu Lübeck
+Hochschule für angewandte Wissenschaften Landshut
+Hochschule für Technik und Wirtschaft Dresden
+AKAD Bildungsgesellschaft (Stuttgart)
+Hochschule Hildesheim/Holzminden/Göttingen
+Hochschule Mannheim
+Hochschule Reutlingen
+Technische Hochschule Lübeck
+Universität Vechta
+Westsächsische Hochschule Zwickau
+Katholische Universität Eichstätt-Ingolstadt
+Hochschule Anhalt (Bernburg, Dessau und Köthen)
+Rheinische Fachhochschule Köln
+Hochschule Emden/Leer
+Ernst-Abbe-Hochschule Jena
+Hochschule für Wirtschaft und Gesellschaft Ludwigshafen
+Fachhochschule Erfurt
+Hochschule für Wirtschaft und Umwelt Nürtingen-Geislingen
+Pädagogische Hochschule Freiburg
+Hochschule Konstanz Technik, Wirtschaft und Gestaltung
+Hochschule Hamm-Lippstadt
+Pädagogische Hochschule Heidelberg
+Hochschule für angewandte Wissenschaften Coburg
+Hochschule Ruhr West (Mülheim, Bottrop)
+Technische Hochschule Wildau (FH)
+Hochschule Offenburg
+Hochschule der Medien (Stuttgart)
+Katholische Hochschule Nordrhein-Westfalen (Köln, Münster, Paderborn, Aachen)
+Technische Hochschule Ulm
+Bauhaus-Universität Weimar
+Technische Universität Clausthal
+Hochschule Flensburg (Fachhochschule)
+Technische Universität Bergakademie Freiberg
+Hochschule für angewandte Wissenschaften Neu-Ulm
+Fachhochschule für öffentliche Verwaltung und Rechtspflege in Bayern (München)
+Pädagogische Hochschule Karlsruhe
+Alice Salomon Hochschule Berlin
+Hochschule für Technik Stuttgart
+Hochschule Worms
+Hochschule Ravensburg-Weingarten
+Hochschule Albstadt-Sigmaringen
+Medizinische Hochschule Hannover
+Universität der Bundeswehr München
+Universität der Künste Berlin
+Deutsche Hochschule für Prävention und Gesundheitsmanagement (Saarbrücken)
+Hochschule Zittau/Görlitz
+Fachhochschule Potsdam
+Pädagogische Hochschule Weingarten
+Technische Hochschule Aschaffenburg
+Hochschule Harz (Wernigerode und Halberstadt)
+Ostbayerische Technische Hochschule Amberg-Weiden
+Hochschule Bremerhaven
+Hochschule für Angewandte Wissenschaften Hof
+Hochschule für angewandtes Management (Ismaning)
+Technische Hochschule Brandenburg
+Hochschule für angewandte Wissenschaften Ansbach
+Hochschule Schmalkalden
+Helmut-Schmidt-Universität/Universität der Bundeswehr Hamburg
+SRH Hochschule Heidelberg
+Technische Hochschule Bingen
+Hochschule Merseburg
+University of Applied Sciences Europe (Iserlohn, Hamburg, Berlin)
+Pädagogische Hochschule Schwäbisch Gmünd
+Frankfurt School of Finance & Management
+Hessische Hochschule für Polizei und Verwaltung (Wiesbaden)
+Universität Witten/Herdecke
+Hochschule Stralsund
+Stiftung Tierärztliche Hochschule Hannover
+Hochschule Nordhausen
+Hochschule Biberach
+HafenCity Universität Hamburg
+International School of Management (Dortmund)
+Dresden International University
+Technische Hochschule Georg Agricola (Bochum)
+Katholische Stiftungshochschule München
+Hochschule Neubrandenburg
+Hochschule für nachhaltige Entwicklung Eberswalde
+PFH Private Hochschule Göttingen
+Macromedia Hochschule für Medien und Kommunikation (Stuttgart)
+Evangelische Hochschule Rheinland-Westfalen-Lippe (Bochum)
+EBS Universität für Wirtschaft und Recht (Wiesbaden, Oestrich-Winkel)
+Fachhochschule Westküste (Heide)
+Hochschule für öffentliche Verwaltung und Finanzen Ludwigsburg
+Fachhochschule der Wirtschaft (Paderborn)
+Alanus Hochschule für Kunst und Gesellschaft (Alfter)
+Katholische Hochschule Freiburg
+Evangelische Hochschule Berlin
+Hochschule für öffentliche Verwaltung Rheinland-Pfalz (Mayen, Lautzenhausen)
+Evangelische Hochschule Darmstadt
+Hochschule für Medien, Kommunikation und Wirtschaft
+Europäische Fachhochschule (Brühl)
+Fachhochschule des Mittelstands (Bielefeld)
+Hochschule für Musik und Tanz Köln
+Folkwang Universität der Künste (Essen)
+Jacobs University Bremen
+Fachhochschule für Finanzen Nordrhein-Westfalen (Nordkirchen)
+Duale Hochschule Gera-Eisenach
+Katholische Hochschule Mainz
+Katholische Hochschule für Sozialwesen Berlin
+Fachhochschule für Verwaltung und Dienstleistung (Altenholz, Reinfeld)
+WHU - Otto Beisheim School of Management (V-llendar)
+Nordakademie (Elmshorn)
+Hochschule für Musik, Theater und Medien Hannover
+Mediadesign Hochschule
+Hochschule für Musik und Theater Hamburg
+Hochschule für Polizei Baden-Württemberg
+Apollon Hochschule der Gesundheitswirtschaft
+Evangelische Hochschule Nürnberg
+IST-Hochschule für Management (Düsseldorf)
+Cologne Business School (Köln)
+Hochschule Geisenheim
+bbw Hochschule
+Hochschule des Bundes für öffentliche Verwaltung (Brühl)
+MSH Medical School Hamburg
+Hochschule für Bildende Künste Braunschweig
+Burg Giebichenstein Kunsthochschule Halle
+Hochschule für Musik und Theater „Felix Mendelssohn Bartholdy“ Leipzig
+Hochschule für Musik und Theater München
+Evangelische Hochschule Ludwigsburg
+Hochschule für Telekommunikation Leipzig
+HSBA Hamburg School of Business Administration
+Hochschule für Forstwirtschaft Rottenburg
+Hochschule Kehl
+Kunsthochschule Kassel
+Fachhochschule Wedel
+Hochschule der Sparkassen-Finanzgruppe (Bonn)
+Hochschule für Künste Bremen
+Zeppelin Universität (Friedrichshafen)
+Provadis School of International Management and Technology (Frankfurt am Main)
+Evangelische Hochschule Freiburg
+Robert Schumann Hochschule Düsseldorf
+Deutsche Hochschule für Gesundheit und Sport
+Hochschule für bildende Künste Hamburg
+Hessische Hochschule für Finanzen und Rechtspflege (Rotenburg an der Fulda)
+EBC Hochschule
+Filmuniversität Babelsberg Konrad Wolf (Potsdam)
+Hochschule für Musik und Darstellende Kunst Frankfurt am Main
+Bucerius Law School
+Hochschule der Bundesagentur für Arbeit (Mannheim, Schwerin)
+Staatliche Akademie der Bildenden Künste Stuttgart
+Hochschule für Musik Franz Liszt Weimar
+Kommunale Hochschule für Verwaltung in Niedersachsen (Hannover)
+Kunsthochschule Berlin-Weißensee
+Akkon-Hochschule für Humanwissenschaften
+Hochschule für Musik und Darstellende Kunst Stuttgart
+Fachhochschule Polizei Sachsen-Anhalt (Aschersleben)
+ESCP Business School
+hochschule 21 (Buxtehude)
+International Psychoanalytic University Berlin
+Fachhochschule für Wirtschaft und Technik Vechta/Diepholz/Oldenburg
+Akademie der Bildenden Künste München
+Fachhochschule für Rechtspflege Nordrhein-Westfalen (Bad Münstereifel)
+Handelshochschule Leipzig
+Hertie School
+Fachhochschule für öffentliche Verwaltung und Rechtspflege Meißen
+Hochschule für Musik Detmold
+Hochschule für Gestaltung Offenbach am Main
+Hochschule für Gestaltung Schwäbisch Gmünd
+Karlshochschule International University (Karlsruhe)
+Hochschule für Musik Würzburg
+Evangelische Hochschule Dresden
+Kunstakademie Düsseldorf
+Hochschule für Bildende Künste Dresden
+Hochschule für Musik Karlsruhe
+Hochschule für Musik und Darstellende Kunst Mannheim
+Fachhochschule für Finanzen Brandenburg (Königs Wusterhausen)
+EBZ Business School (Bochum)
+Muthesius Kunsthochschule (Kiel)
+Hochschule für Grafik und Buchkunst Leipzig
+Fachhochschule der Diakonie (Bielefeld)
+Hochschule für Musik und Theater Rostock
+Hochschule für Musik Carl Maria von Weber Dresden
+accadis Hochschule Bad Homburg
+SRH Hochschule der populären Künste
+IB-Hochschule Berlin
+SRH Hochschule Berlin
+Munich Business School (München)
+Fachhochschule Dresden
+Filmakademie Baden-Württemberg (Ludwigsburg)
+SRH Hochschule Hamm
+Hochschule für Gesundheit (Bochum)
+Hochschule für Musik Hanns Eisler Berlin
+SRH Hochschule für Gesundheit (Gera)
+Hochschule für Musik Freiburg
+Hochschule für Finanzen Rheinland-Pfalz (Edenkoben)
+Fachhochschule für die Wirtschaft Hannover
+Fachhochschule für öffentliche Verwaltung, Polizei und Rechtspflege (Güstrow)
+Hochschule für Musik Trossingen
+Psychologische Hochschule Berlin
+Fachhochschule für Verwaltung des Saarlandes (Saarbrücken)
+Evangelische Hochschule für Soziale Arbeit & Diakonie
+Hochschule Weserbergland (Hameln)
+Hochschule für Musik Saar (Saarbrücken)
+German open Business School
+Hochschule für Wirtschaft, Technik und Kultur
+Fachhochschule Schwetzingen
+Hochschule für Politik München
+Hochschule für Künste im Sozialen Ottersberg
+NBS Northern Business School - Hochschule für Management und Sicherheit
+Deutsche Hochschule der Polizei (Münster)
+Deutsche Universität für Verwaltungswissenschaften Speyer
+Philosophisch-Theologische Hochschule Vallendar
+Staatliche Hochschule für Gestaltung Karlsruhe
+Hochschule der Bildenden Künste Saar (Saarbrücken)
+Thüringer Fachhochschule für öffentliche Verwaltung (Gotha, Meiningen)
+Hochschule für Musik Nürnberg
+Hochschule für Fernsehen und Film München
+Popakademie Baden-Württemberg (Mannheim)
+Berlin International University of Applied Sciences
+Hochschule für Öffentliche Verwaltung Bremen
+Hochschule der Sächsischen Polizei (FH) (Rothenburg/Oberlausitz)
+European School of Management and Technology
+Hochschule für Angewandte Sprachen München
+Musikhochschule Lübeck
+Allensbach Hochschule (Konstanz)
+Dekra Hochschule für Medien
+Norddeutsche Akademie für Finanzen und Steuerrecht (Hamburg)
+BSP Business School Berlin
+Kühne Logistics University (Hamburg)
+Hochschule für Philosophie München
+Philosophisch-Theologische Hochschule Sankt Georgen (Frankfurt am Main)
+Kunstakademie Münster
+Kunsthochschule für Medien Köln
+Hochschule der Deutschen Bundesbank (Hachenburg)
+Akademie der Bildenden Künste Nürnberg
+Leibniz-Akademie Hannover (Hannover)
+Freie Hochschule Stuttgart
+SRH Hochschule für Wirtschaft und Medien Calw
+CVJM-Hochschule (Kassel)
+design akademie berlin, SRH Hochschule für Kommunikation und Design
+Hochschule für Kunsttherapie Nürtingen
+Staatliche Akademie der Bildenden Künste Karlsruhe
+Fliedner Fachhochschule Düsseldorf
+Fachhochschule der Polizei des Landes Brandenburg (Oranienburg)
+Norddeutsche Hochschule für Rechtspflege (Hildesheim)
+Hochschule der Deutschen Gesetzlichen Unfallversicherung (Bad Hersfeld)
+Mathias Hochschule Rheine
+Internationale Hochschule Liebenzell
+Merz Akademie (Stuttgart)
+Bard College Berlin
+Hochschule der Wirtschaft für Management Mannheim
+CODE University of Applied Sciences
+Hochschule für Schauspielkunst Ernst Busch
+Freie Theologische Hochschule Gießen
+Staatliche Hochschule für Bildende Künste - Städelschule (Frankfurt am Main)
+Naturwissenschaftlich-Technische Akademie Isny
+Theologische Hochschule Friedensau
+Theologische Fakultät Trier
+Rheinische Fachhochschule Neuss für Internationale Wirtschaft
+Palucca Hochschule für Tanz Dresden
+VWA Hochschule für berufsbegleitendes Studium Stuttgart
+Quadriga Hochschule Berlin
+Hochschule der Bayerischen Wirtschaft (München)
+Augustana-Hochschule Neuendettelsau
+Hochschule der bildenden Künste Essen
+Kirchliche Hochschule Wuppertal/Bethel
+German Graduate School of Management and Law (Heilbronn)
+Touro College Berlin
+Fachhochschule für Sport & Management Potsdam
+Hochschule für Kunst, Design und Populäre Musik Freiburg
+media Akademie - Hochschule Stuttgart
+Kölner Hochschule für Katholische Theologie
+Wilhelm Löhe Hochschule für angewandte Wissenschaften (Fürth)
+Hochschule für Jüdische Studien Heidelberg
+Evangelische Hochschule Moritzburg
+Theologische Fakultät Paderborn
+Brand University of Applied Sciences
+Hochschule für Katholische Kirchenmusik und Musikpädagogik Regensburg
+Evangelische Hochschule Tabor (Marburg)
+Medizinische Hochschule Brandenburg Theodor Fontane
+International Business School of Service Management (Hamburg)
+Hochschule für internationale Wirtschaft und Logistik
+Theologische Hochschule Ewersbach
+Theologische Hochschule Elstal
+Philosophisch-Theologische Hochschule Münster
+Theologische Hochschule Reutlingen
+Hochschule für Kirchenmusik Heidelberg
+Akademie für Darstellende Kunst Baden-Württemberg (Ludwigsburg)
+Evangelische Hochschule für Kirchenmusik Halle
+Archivschule Marburg
+Theologische Fakultät Fulda
+Katholische Hochschule für Kirchenmusik Rottenburg
+Hochschule für Kirchenmusik der Evangelischen Kirche von Westfalen (Herford)
+Lutherische Theologische Hochschule Oberursel
+Hochschule für Kirchenmusik Dresden
+Northern Institute of Technology Management (Hamburg)
+Hochschule für evangelische Kirchenmusik Bayreuth
+DPFA Hochschule Sachsen (Zwickau)
+Evangelische Hochschule für Kirchenmusik Tübingen
+Fachhochschule für Interkulturelle Theologie Hermannsburg
+Technische Universität Nürnberg
+Health and Medical University Potsdam

@@ -46,12 +46,12 @@ CREATE TABLE IF NOT EXISTS `studiboerse`.`chat` (
    CONSTRAINT `fk_chat_user1`
     FOREIGN KEY (`user_id`)
     REFERENCES `studiboerse`.`user` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_chat_offer1`
     FOREIGN KEY (`offer_id`)
     REFERENCES `studiboerse`.`offer` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -73,12 +73,12 @@ CREATE TABLE IF NOT EXISTS `studiboerse`.`message` (
   CONSTRAINT `fk_message_chat1`
     FOREIGN KEY (`chat_id`)
     REFERENCES `studiboerse`.`chat` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_message_user1`
     FOREIGN KEY (`user_id`)
     REFERENCES `studiboerse`.`user` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -103,12 +103,12 @@ CREATE TABLE IF NOT EXISTS `studiboerse`.`offer` (
   CONSTRAINT `fk_offer_category`
     FOREIGN KEY (`category_id`)
     REFERENCES `studiboerse`.`category` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_offer_user1`
     FOREIGN KEY (`user_id`)
     REFERENCES `studiboerse`.`user` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `studiboerse`.`picture` (
   CONSTRAINT `fk_picture_offer1`
     FOREIGN KEY (`offer_id`)
     REFERENCES `studiboerse`.`offer` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -149,12 +149,12 @@ CREATE TABLE IF NOT EXISTS `studiboerse`.`rating` (
   CONSTRAINT `fk_rating_user1`
     FOREIGN KEY (`user_id_sender`)
     REFERENCES `studiboerse`.`user` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_rating_user2`
     FOREIGN KEY (`user_id_receiver`)
     REFERENCES `studiboerse`.`user` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -166,7 +166,7 @@ DROP TABLE IF EXISTS `studiboerse`.`university` ;
 
 CREATE TABLE IF NOT EXISTS `studiboerse`.`university` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `university` VARCHAR(50) NOT NULL,
+  `university` VARCHAR(120) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `studiboerse`.`user` (
   CONSTRAINT `fk_user_university1`
     FOREIGN KEY (`university_id`)
     REFERENCES `studiboerse`.`university` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -211,12 +211,12 @@ CREATE TABLE IF NOT EXISTS `studiboerse`.`watchlist` (
   CONSTRAINT `fk_watchlist_offer1`
     FOREIGN KEY (`offer_id`)
     REFERENCES `studiboerse`.`offer` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_watchlist_user1`
     FOREIGN KEY (`user_id`)
     REFERENCES `studiboerse`.`user` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 

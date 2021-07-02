@@ -17,12 +17,12 @@ class DatabaseController:
         self.password = config["DATABASE"]['password']
         self.database = config["DATABASE"]['database']
 
-    def get_user_by_email(self, e_mail):
-        query = "SELECT first_name,last_name,e_mail,password,course,TO_BASE64(profile_picture),university_id,admin,id FROM user WHERE e_mail = %s"
+    def get_user(self,where_string,tuple):
+        query = "SELECT first_name,last_name,e_mail,password,course,TO_BASE64(profile_picture),university_id,admin,id FROM user WHERE "+ where_string
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
-        cursor.execute(query, (e_mail,))
+        cursor.execute(query, tuple)
         result = cursor.fetchone()
         if (result is not None):
             first_name, last_name, e_mail, password, course, profile_picture, university_id, admin, id = result
@@ -39,27 +39,11 @@ class DatabaseController:
         connection.close()
         return user
 
+    def get_user_by_email(self, e_mail):
+        return self.get_user("e_mail = %s",(e_mail,))
+
     def get_user_by_id(self, id):
-        query = "SELECT first_name,last_name,e_mail,password,course,TO_BASE64(profile_picture),university_id,admin,id FROM user WHERE id = %s"
-        connection = mysql.connector.connect(
-            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
-        cursor = connection.cursor()
-        cursor.execute(query, (id,))
-        result = cursor.fetchone()
-        if (result is not None):
-            first_name, last_name, e_mail, password, course, profile_picture, university_id, admin, id = result
-            if(admin == 1):
-                admin = True
-            elif(admin == 0):
-                admin = False
-            user = data.user.User(
-                first_name, last_name, e_mail, password, course, university_id, admin, id)
-            user.set_profile_picture(profile_picture)
-        else:
-            user = None
-        cursor.close()
-        connection.close()
-        return user
+        return self.get_user("id = %s",(id,))
 
     def create_user(self, user):
         if (self.get_user_by_email(user.get_e_mail()) is not None):
@@ -105,9 +89,6 @@ class DatabaseController:
 
     def delete_user(self, id):
         query = """DELETE FROM user WHERE id=%s"""
-        offer_ids = self.get_offer_ids_by_user_id(id)
-        for offer_id in offer_ids:
-            self.delete_offer(offer_id)
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
@@ -169,53 +150,42 @@ class DatabaseController:
         connection.close()
         return result
 
-    def get_university_by_name(self, name):
-        query = "SELECT id, university FROM university WHERE university = %s"
+
+    def get_university(self,where_string,tuple):
+        query = "SELECT id, university FROM university WHERE " + where_string
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
-        cursor.execute(query, (name,))
+        cursor.execute(query, tuple)
         result = cursor.fetchone()
         university = data.university.University(*result)
         cursor.close()
         connection.close()
         return university
+
+    def get_university_by_name(self, name):
+        return self.get_university("university = %s",(name,))
 
     def get_university_by_id(self, id):
-        query = "SELECT id, university FROM university WHERE id = %s"
+        return self.get_university("id = %s",(id,))
+
+    def get_category(self,where_string,tuple):
+        query = "SELECT id, title FROM category WHERE " + where_string
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
-        cursor.execute(query, (id,))
+        cursor.execute(query, tuple)
         result = cursor.fetchone()
-        university = data.university.University(*result)
+        category = data.category.Category(*result)
         cursor.close()
         connection.close()
-        return university
+        return category
 
     def get_category_by_name(self, name):
-        query = "SELECT id, title FROM category WHERE title = %s"
-        connection = mysql.connector.connect(
-            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
-        cursor = connection.cursor()
-        cursor.execute(query, (name,))
-        result = cursor.fetchone()
-        category = data.category.Category(*result)
-        cursor.close()
-        connection.close()
-        return category
+        return self.get_category("title = %s", (name,))
 
     def get_category_by_id(self, id):
-        query = "SELECT id, title FROM category WHERE id = %s"
-        connection = mysql.connector.connect(
-            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
-        cursor = connection.cursor()
-        cursor.execute(query, (id,))
-        result = cursor.fetchone()
-        category = data.category.Category(*result)
-        cursor.close()
-        connection.close()
-        return category
+        return self.get_category("id = %s", (id,))
 
     def get_offer_by_id(self, id):
         query_offer = "SELECT title,compensation_type,price,description,sold,category_id,user_id FROM offer WHERE id = %s"
@@ -244,55 +214,75 @@ class DatabaseController:
         connection.close()
         return offer
 
-    def get_offer_ids_by_user_id(self, id):
-        query_offer = "SELECT id FROM offer WHERE user_id = %s AND offer.sold <> 1"
+
+    def get_offers(self,where_string,tuple):
+        query_offer = "SELECT title,compensation_type,price,description,sold,category_id,user_id, id FROM offer WHERE " + where_string
+        query_picture = "SELECT TO_BASE64(data) FROM picture WHERE offer_id = %s"
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
-        cursor.execute(query_offer, (id,))
-        result_tupel = cursor.fetchall()
-        result = []
-        for element in result_tupel:
-            offer_id, = element
-            result.append(offer_id)
+        cursor.execute(query_offer, tuple)
+        result = cursor.fetchall()
+        offers = []
+        for element in result:
+            print(len(element))
+            title, compensation_type, price, description, sold, category_id, user_id, id = element
+            if(sold == 1):
+                sold = True
+            else:
+                sold = False
+            offer = data.offer.Offer(
+                title, compensation_type, price, description, sold, category_id, user_id, id)
+            cursor.execute(query_picture, (id,))
+            result_picture = cursor.fetchall()
+            for element_picture in result_picture:
+                unpacked_element, = element_picture
+                offer.add_picture(unpacked_element)
+            offers.append(offer)
         cursor.close()
         connection.close()
-        return result
+        return offers
 
-    def get_recommend_offer_ids_by_user(self, user):
-        query_offer = "SELECT offer.id FROM offer,user WHERE offer.user_id = user.id AND user.university_id = %s AND offer.sold <> 1 AND offer.user_id <> %s"
+
+    def get_offers_by_user_id(self, id):
+        return self.get_offers("user_id = %s AND offer.sold <> 1",(id,))
+
+    def get_recommend_offers_without_user(self):
+        return self.get_offers("offer.sold <> 1 ORDER BY offer.id DESC LIMIT 0,10",None)
+
+    def get_recommend_offers_by_user(self, user):
+        query_offer = "SELECT offer.title,offer.compensation_type,offer.price,offer.description,offer.sold,offer.category_id,offer.user_id,offer.id FROM offer,user WHERE offer.user_id = user.id AND user.university_id = %s AND offer.sold <> 1 AND offer.user_id <> %s"
+        query_picture = "SELECT TO_BASE64(data) FROM picture WHERE offer_id = %s"
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
         cursor.execute(query_offer, (user.get_university_id(),user.get_id()))
-        result_tupel = cursor.fetchall()
-        result = []
-        for element in result_tupel:
-            offer_id, = element
-            result.append(offer_id)
+        result = cursor.fetchall()
+        offers = []
+        for element in result:
+            print(len(element))
+            title, compensation_type, price, description, sold, category_id, user_id, id = element
+            if(sold == 1):
+                sold = True
+            else:
+                sold = False
+            offer = data.offer.Offer(
+                title, compensation_type, price, description, sold, category_id, user_id, id)
+            cursor.execute(query_picture, (id,))
+            result_picture = cursor.fetchall()
+            for element_picture in result_picture:
+                unpacked_element, = element_picture
+                offer.add_picture(unpacked_element)
+            offers.append(offer)
         cursor.close()
         connection.close()
-        return result
+        return offers
 
-    def get_recommend_offer_ids_without_user(self):
-        query_offer = "SELECT offer.id FROM offer WHERE offer.sold <> 1 ORDER BY offer.id DESC LIMIT 0,10"
-        connection = mysql.connector.connect(
-            host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
-        cursor = connection.cursor()
-        cursor.execute(query_offer)
-        result_tupel = cursor.fetchall()
-        result = []
-        for element in result_tupel:
-            offer_id, = element
-            result.append(offer_id)
-        cursor.close()
-        connection.close()
-        return result
-
-    def get_filtered_offer_ids(self, title, category, university, compensation_type, max_price, min_price):
-        query_offer = """SELECT offer.id FROM offer,category,user,university 
+    def get_filtered_offers(self, title, category, university, compensation_type, max_price, min_price):
+        query_offer = """SELECT offer.title,offer.compensation_type,offer.price,offer.description,offer.sold,offer.category_id,offer.user_id,offer.id FROM offer,category,user,university 
         WHERE offer.category_id = category.id AND offer.user_id = user.id AND user.university_id = university.id 
         AND offer.sold <> 1 """
+        query_picture = "SELECT TO_BASE64(data) FROM picture WHERE offer_id = %s"
         value_list = []
         if (title is not None):
             value_list.append("%" + title + "%")
@@ -316,14 +306,26 @@ class DatabaseController:
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
         cursor.execute(query_offer, tuple(value_list))
-        result_tupel = cursor.fetchall()
-        result = []
-        for element in result_tupel:
-            offer_id, = element
-            result.append(offer_id)
+        result = cursor.fetchall()
+        offers = []
+        for element in result:
+            print(len(element))
+            title, compensation_type, price, description, sold, category_id, user_id, id = element
+            if(sold == 1):
+                sold = True
+            else:
+                sold = False
+            offer = data.offer.Offer(
+                title, compensation_type, price, description, sold, category_id, user_id, id)
+            cursor.execute(query_picture, (id,))
+            result_picture = cursor.fetchall()
+            for element_picture in result_picture:
+                unpacked_element, = element_picture
+                offer.add_picture(unpacked_element)
+            offers.append(offer)
         cursor.close()
         connection.close()
-        return result
+        return offers
 
     def create_offer(self, offer):
         query_offer = """INSERT INTO 
@@ -374,14 +376,11 @@ class DatabaseController:
         return offer
 
     def delete_offer(self, id):
-        query_picture = """DELETE FROM picture WHERE offer_id=%s"""
-        query_offer = """DELETE FROM offer WHERE id=%s"""
+        query = """DELETE FROM offer WHERE id=%s"""
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
-        cursor.execute(query_picture, (id,))
-        cursor.fetchall()
-        cursor.execute(query_offer, (id,))
+        cursor.execute(query, (id,))
         cursor.fetchall()
         connection.commit()
         cursor.close()
@@ -420,7 +419,6 @@ class DatabaseController:
         result = []
         for element in cursor.fetchall():
             result.append(data.watchlist_entry.Watchlist_entry(*element))
-        connection.commit()
         cursor.close()
         connection.close()
         return result
@@ -472,7 +470,6 @@ class DatabaseController:
         result = []
         for element in cursor.fetchall():
             result.append(data.message.Message(*element))
-        connection.commit()
         cursor.close()
         connection.close()
         return result
@@ -488,7 +485,7 @@ class DatabaseController:
         cursor.close()
         connection.close()
 
-    def get_conversations(self, user_id):
+    def get_chats(self, user_id):
         query = """SELECT DISTINCT chat.user_id, chat.offer_id, chat.id FROM chat, offer WHERE chat.user_id = %s OR (offer.id = chat.offer_id AND offer.user_id = %s)"""
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
@@ -497,7 +494,6 @@ class DatabaseController:
         result = []
         for element in cursor.fetchall():
             result.append(data.chat.Chat(*element))
-        connection.commit()
         cursor.close()
         connection.close()
         return result
@@ -509,20 +505,16 @@ class DatabaseController:
         cursor = connection.cursor()
         cursor.execute(query, (chat_id,))
         result = data.chat.Chat(*cursor.fetchone())
-        connection.commit()
         cursor.close()
         connection.close()
         return result
 
     def delete_chat(self, chat_id):
-        query_message = """DELETE FROM message WHERE chat_id = %s"""
-        query_chat = """DELETE FROM chat WHERE id = %s"""
+        query = """DELETE FROM chat WHERE id = %s"""
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)
         cursor = connection.cursor()
-        cursor.execute(query_message, (chat_id,))
-        cursor.fetchall()
-        cursor.execute(query_chat, (chat_id,))
+        cursor.execute(query, (chat_id,))
         cursor.fetchall()
         connection.commit()
         cursor.close()
@@ -539,7 +531,6 @@ class DatabaseController:
             result = True
         else:
             result = False
-        connection.commit()
         cursor.close()
         connection.close()
         return result
@@ -555,7 +546,6 @@ class DatabaseController:
             result = True
         else:
             result = False
-        connection.commit()
         cursor.close()
         connection.close()
         return result
@@ -591,7 +581,6 @@ class DatabaseController:
         cursor = connection.cursor()
         cursor.execute(query, (user_id,))
         rating = cursor.fetchone()
-        connection.commit()
         cursor.close()
         connection.close()
         if (rating is not None):
@@ -607,7 +596,6 @@ class DatabaseController:
         cursor = connection.cursor()
         cursor.execute(query, (user_id_sender,user_id_receiver))
         rating = cursor.fetchone()
-        connection.commit()
         cursor.close()
         connection.close()
         if (rating is not None):

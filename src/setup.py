@@ -4,7 +4,9 @@ import mysql.connector
 
 filename = "res\\sql\\Create.sql"
 try:
-    querry = open(filename, "r").read()
+    file = open(filename, "r")
+    querry = file.read()
+    file.close()
 except OSError:
     print("Die Datei {filename} konnte nicht geöffnet werden.")
 

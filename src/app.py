@@ -69,13 +69,7 @@ def users():
     result = "["
     last = len(users)-1
     for i, element in enumerate(users):
-        result += f"""{{"id":{element.get_id()},"first_name":"{element.get_first_name()}","last_name":"{element.get_last_name()}"
-,"e_mail":"{element.get_e_mail()}","course":"{element.get_course()}"
-,"university":"{database_controller.get_university_by_id(element.get_university_id()).get_name()}","admin":{str(element.get_admin()).lower()} """
-        picture = element.get_profile_picture()
-        if (picture is not None):
-            result += f""","profile_picture":"{picture}" """
-        result += """}"""
+        result += encode_user(element,True)
         if(i != last):
             result += """,
 """
@@ -95,14 +89,7 @@ def user():
         print(e)
         return "", 401
     user = database_controller.get_user_by_id(user_id)
-    result = f"""{{"id":{user.get_id()},"first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}"
-,"e_mail":"{user.get_e_mail()}","course":"{user.get_course()}"
-,"university":"{database_controller.get_university_by_id(user.get_university_id()).get_name()}","admin":{str(user.get_admin()).lower()} """
-    picture = user.get_profile_picture()
-    if (picture is not None):
-        result += f""","profile_picture":"{picture}" """
-    result += """}"""
-    return result, 200, {"Content-Type": "application/json"}
+    return  encode_user(user,True), 200, {"Content-Type": "application/json"}
 
 
 @app.route("/user", methods=["DELETE"])
@@ -278,7 +265,6 @@ def update_offer():
     database_controller.update_offer(offer)
     return "", 200
 
-
 @app.route("/offers", methods=["GET"])
 def offers():
     if ("Authorization" in request.headers):
@@ -290,21 +276,19 @@ def offers():
     except jwt.exceptions.InvalidTokenError:
         return "", 401
 
-    offer_ids = database_controller.get_offer_ids_by_user_id(user_id)
-    if (len(offer_ids) == 0):
+    offers = database_controller.get_offers_by_user_id(user_id)
+    if (len(offers) == 0):
         return "", 204
 
-    last_offer = len(offer_ids)-1
+    last_offer = len(offers)-1
     result = """["""
-    for i, offer_id in enumerate(offer_ids):
-        offer = database_controller.get_offer_by_id(offer_id)
+    for i, offer in enumerate(offers):
         result += encode_offer(offer)
         if(i != last_offer):
             result += """,
 """
     result += """]"""
     return result, 200, {"Content-Type": "application/json"}
-
 
 @app.route("/offers/recommend", methods=["GET"])
 def recommend_offers():
@@ -315,23 +299,21 @@ def recommend_offers():
         except jwt.exceptions.InvalidTokenError:
             return "", 401
         user = database_controller.get_user_by_id(user_id)
-        offer_ids = database_controller.get_recommend_offer_ids_by_user(user)
+        offers = database_controller.get_recommend_offers_by_user(user)
     else:
-        offer_ids = database_controller.get_recommend_offer_ids_without_user()
-    if (len(offer_ids) == 0):
+        offers = database_controller.get_recommend_offers_without_user()
+    if (len(offers) == 0):
         return "", 204
 
-    last_offer = len(offer_ids)-1
+    last_offer = len(offers)-1
     result = """["""
-    for i, offer_id in enumerate(offer_ids):
-        offer = database_controller.get_offer_by_id(offer_id)
+    for i, offer in enumerate(offers):
         result += encode_offer(offer, True)
         if(i != last_offer):
             result += """,
 """
     result += """]"""
     return result, 200, {"Content-Type": "application/json"}
-
 
 @app.route("/offers/filtered", methods=["GET"])
 def filtered_offers():
@@ -341,14 +323,13 @@ def filtered_offers():
     compensation_type = request.args.get("compensation_type", type=str)
     max_price = request.args.get("max_price", type=float)
     min_price = request.args.get("min_price", type=float)
-    offer_ids = database_controller.get_filtered_offer_ids(
+    offers = database_controller.get_filtered_offers(
         title, category, university, compensation_type, max_price, min_price)
-    if (len(offer_ids) == 0):
+    if (len(offers) == 0):
         return "", 204
-    last_offer = len(offer_ids)-1
+    last_offer = len(offers)-1
     result = """["""
-    for i, offer_id in enumerate(offer_ids):
-        offer = database_controller.get_offer_by_id(offer_id)
+    for i, offer in enumerate(offers):
         result += encode_offer(offer, True)
         if(i != last_offer):
             result += """,
@@ -493,7 +474,7 @@ def delete_message(chat_id, message_id):
 
 
 @app.route("/messages", methods=["GET"])
-def get_conversations():
+def get_chats():
     if ("Authorization" in request.headers):
         auth_header = request.headers["Authorization"]
     else:
@@ -502,7 +483,7 @@ def get_conversations():
         user_id, admin = decode_token(auth_header)
     except jwt.exceptions.InvalidTokenError:
         return "", 401
-    conversations = database_controller.get_conversations(user_id)
+    conversations = database_controller.get_chats(user_id)
     if (len(conversations) == 0):
         return "", 204
     last_element = len(conversations)-1
@@ -631,8 +612,16 @@ def encode_offer(offer, one_image=False):
     return result
 
 
-def encode_user(user):
-    return f"""{{"id":"{user.get_id()}","first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}","e_mail":"{user.get_e_mail()}","average_rating":{database_controller.get_average_rating(user.get_id())},"university":"{database_controller.get_university_by_id(user.get_university_id()).get_name()}"}}"""
+def encode_user(user,extended = False):
+    result = f"""{{"id":"{user.get_id()}","first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}","e_mail":"{user.get_e_mail()}","average_rating":{database_controller.get_average_rating(user.get_id())},"university":"{database_controller.get_university_by_id(user.get_university_id()).get_name()}" """
+    if (extended):
+        result += f""","course":"{user.get_course()}","admin":{str(user.get_admin()).lower()}"""
+        picture = user.get_profile_picture()
+        if (picture is not None):
+            result += f""","profile_picture":"{picture}" """
+        result += """}"""
+    result += """}"""
+    return result
 
 # if __name__ == "__main__":
 #    app.run(ssl_context=("cert\\cert.pem", "cert\\key.pem"))
