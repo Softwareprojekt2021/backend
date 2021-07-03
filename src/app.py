@@ -619,7 +619,6 @@ def encode_user(user,extended = False):
         picture = user.get_profile_picture()
         if (picture is not None):
             result += f""","profile_picture":"{picture}" """
-        result += """}"""
     result += """}"""
     return result
 
