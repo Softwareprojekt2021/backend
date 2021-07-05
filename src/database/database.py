@@ -70,7 +70,7 @@ class DatabaseController:
         query = """UPDATE user SET first_name=%s,last_name=%s,e_mail=%s,password=%s,course=%s
         ,profile_picture=FROM_BASE64(%s),admin=%s,university_id=%s WHERE id = %s"""
         duplicate_user = self.get_user_by_email(user.get_e_mail())
-        if (duplicate_user is not None and duplicate_user.get_e_mail() != user.get_e_mail()):
+        if (duplicate_user is not None):
             return False
         connection = mysql.connector.connect(
             host=self.host, port=self.port, user=self.user, password=self.password, database=self.database, raise_on_warnings=True)

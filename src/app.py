@@ -114,7 +114,7 @@ def delete_user_by_id(user_id):
     else:
         return "", 401
     try:
-        _, admin = decode_token(auth_header)
+        login_user_id, admin = decode_token(auth_header)
     except jwt.exceptions.InvalidTokenError as e:
         print(e)
         return "", 401
