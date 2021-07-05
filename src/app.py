@@ -69,7 +69,7 @@ def users():
     result = "["
     last = len(users)-1
     for i, element in enumerate(users):
-        result += encode_user(element,True)
+        result += encode_user(element, True)
         if(i != last):
             result += """,
 """
@@ -89,7 +89,7 @@ def user():
         print(e)
         return "", 401
     user = database_controller.get_user_by_id(user_id)
-    return  encode_user(user,True), 200, {"Content-Type": "application/json"}
+    return encode_user(user, True), 200, {"Content-Type": "application/json"}
 
 
 @app.route("/user", methods=["DELETE"])
@@ -265,6 +265,7 @@ def update_offer():
     database_controller.update_offer(offer)
     return "", 200
 
+
 @app.route("/offers", methods=["GET"])
 def offers():
     if ("Authorization" in request.headers):
@@ -290,6 +291,7 @@ def offers():
     result += """]"""
     return result, 200, {"Content-Type": "application/json"}
 
+
 @app.route("/offers/recommend", methods=["GET"])
 def recommend_offers():
     if ("Authorization" in request.headers):
@@ -314,6 +316,7 @@ def recommend_offers():
 """
     result += """]"""
     return result, 200, {"Content-Type": "application/json"}
+
 
 @app.route("/offers/filtered", methods=["GET"])
 def filtered_offers():
@@ -612,7 +615,7 @@ def encode_offer(offer, one_image=False):
     return result
 
 
-def encode_user(user,extended = False):
+def encode_user(user, extended=False):
     result = f"""{{"id":"{user.get_id()}","first_name":"{user.get_first_name()}","last_name":"{user.get_last_name()}","e_mail":"{user.get_e_mail()}","average_rating":{database_controller.get_average_rating(user.get_id())},"university":"{database_controller.get_university_by_id(user.get_university_id()).get_name()}" """
     if (extended):
         result += f""","course":"{user.get_course()}","admin":{str(user.get_admin()).lower()}"""
